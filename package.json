@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "postinstall": "cd ./Tasks/DownloadArtifactsNexus && npm install",
+    "build": "tsc",
+    "package:DownloadArtifactsNexus": "(for %f in (task.json,package.json,icon.png) do xcopy /y /i .\\Tasks\\DownloadArtifactsNexus\\%f .\\dist\\Tasks\\DownloadArtifactsNexus\\) && cd ./dist/Tasks/DownloadArtifactsNexus && npm install --only=production",
+    "package": "npm run build && npm run package:DownloadArtifactsNexus && tfx extension create --manifests vss-extension.json --output-path ./dist/"
+  }
+}
