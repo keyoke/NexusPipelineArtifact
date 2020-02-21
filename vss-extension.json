@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "name": "Sonartype Nexus Release Artifact",
   "description": "Add support for Sonartype Nexus as an artifact for Release Pipelines",
   "public": true,
@@ -82,7 +82,7 @@
                   "id": "password",
                   "name": "Password",
                   "description": "Password for connecting to the endpoint",
-                  "inputMode": "passwordbox",
+                  "inputMode": "passwordBox",
                   "isConfidential": true,
                   "validation": {
                     "isRequired": false,
@@ -114,112 +114,7 @@
           "properties": {
               "name": "dist/Tasks/DownloadArtifactsNexus"
           }
-      },
-      {
-      "id": "nexus-custom-release-artifact-type",
-      "description": "Sonartype Nexus Artifact",
-      "type": "ms.vss-releaseartifact.release-artifact-type",
-      "targets": [
-        "ms.vss-releaseartifact.artifact-types"
-      ],
-      "properties": {
-        "name": "Nexus",
-        "displayName": "Sonartype Nexus",
-        "endpointTypeId": "nexus",
-        "uniqueSourceIdentifier": "{{connection}}:{{RepositoryId}}",
-        "downloadTaskId": "b62cfc7d-ea9a-4e8a-a09d-fc28304f67f8",
-        "artifactType": "SourceControl",
-        "inputDescriptors": [
-          {
-            "id": "connection",
-            "name": "Service connection",
-            "description": "Service connection ID",
-            "inputMode": "Combo",
-            "isConfidential": false,
-            "hasDynamicValueInformation": true,
-            "validation": {
-              "isRequired": true,
-              "dataType": "string",
-              "maxLength": 300
-            }
-          },
-          {
-            "id": "repository",
-            "name": "RepositoryId",
-            "description": "Repository Id",
-            "inputMode": "string",
-            "validation": {
-              "isRequired": true,
-              "dataType": "string",
-              "maxLength": 300
-            }
-          },
-          {
-            "id": "group",
-            "name": "GroupId",
-            "description": "Group Id",
-            "inputMode": "string",
-            "helpMarkDown": "The Nexus Group Id.  Only letters, numbers, underscore(_), hyphon(-), and dot(.) are allowed.",
-            "validation": {
-              "isRequired": true,
-              "dataType": "string",
-              "maxLength": 300
-            }
-          },
-          {
-            "id": "artifact",
-            "name": "ArtifactId",
-            "description": "Artifact Id",
-            "inputMode": "string",
-            "validation": {
-              "isRequired": true,
-              "dataType": "string",
-              "maxLength": 300
-            }
-          },
-          {
-            "id": "artifactVersion",
-            "name": "ArtifactVersion",
-            "description": "Artifact Version",
-            "inputMode": "string",
-            "validation": {
-              "isRequired": true,
-              "dataType": "string",
-              "maxLength": 300
-            }
-          },
-          {
-            "id": "packaging",
-            "name": "Packaging",
-            "description": "Packaging",
-            "inputMode": "string",
-            "helpMarkDown": "The Nexus Packaging type: pom, jar, ejb, war, ear, rar, par, maven-archetype, or maven-plugin.",
-            "validation": {
-              "isRequired": true,
-              "dataType": "string",
-              "maxLength": 300
-            }
-          }
-        ],
-        "taskInputMapping": {
-          "connection": "{{{connection}}}",
-          "repository": "{{{repository}}}",
-          "group": "{{{group}}}",
-          "artifact": "{{{artifact}}}",
-          "artifactVersion": "{{{artifactVersion}}}",
-          "packaging": "{{{packaging}}}"
-        },
-        "dataSourceBindings": [
-          
-        ],
-        "browsableArtifactTypeMapping": {
-          "folder": "artifactItems"
-        },
-        "ArtifactTriggerConfiguration" : {
-            "isTriggerSupported": false
-        }
       }
-    }
   ],
   "scopes": [],
   "contributionTypes": []
