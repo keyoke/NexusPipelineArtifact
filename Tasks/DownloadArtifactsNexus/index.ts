@@ -87,14 +87,15 @@ async function run() {
         var hostUrl = url.parse(hostUri);
 
         var options : https.RequestOptions = {
-            host: hostUri,
+            host: hostUrl.hostname,
+            port: hostUrl.port || 443,
             path: `/service/rest/v1/search/assets/download?group=${group}&name=${artifact}&maven.baseVersion=${artifactVersion}&maven.extension=${packaging}`,
             method: 'GET',
             rejectUnauthorized: true,
             headers: {
                 'Authorization': 'Basic ' + buffer.toString('base64')
              }   
-          };
+        };
 
         if(acceptUntrustedCerts)
         {
@@ -106,7 +107,7 @@ async function run() {
         const file = fs.createWriteStream(`${artifact}-${artifactVersion}.${packaging}`);
         var req = https.request(options, function(res) {       
             res.pipe(file);
-          }).end();
+        }).end();
     }
     catch (err) {
         tl.setResult(tl.TaskResult.Failed, err.message);
