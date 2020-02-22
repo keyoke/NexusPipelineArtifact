@@ -17,21 +17,24 @@ async function run() {
             throw new Error("Invalid service endpoint.");
         }
         
-        // Get the service connection details for communicating with NEXUS
-        const hostUrl : string | undefined = tl.getEndpointUrl(connection, false);  
+        // Get the service connection details for communicating with Nexus
+        const hostUri : string | undefined = tl.getEndpointUrl(connection, false);  
         const auth: tl.EndpointAuthorization | undefined = tl.getEndpointAuthorization(connection, false);
 
         if(!auth) {
-            throw new Error("A valid NEXUS service connections is required!"); 
+            throw new Error("A valid Nexus service connections is required!"); 
         }
 
         // Token,
         tl.debug(`Service endpoint auth.scheme '${auth.scheme}'.`);
-        // Get the NEXUS auth details
+        // Get the Nexus auth details
         const password : string | undefined = auth.parameters["password"];
         const username : string | undefined = auth.parameters["username"];
- 
-        // Get the NEXUS repository details
+        // Get the SSL cert options
+        const acceptUntrustedCerts = (/true/i).test((tl.getEndpointDataParameter(connection, "acceptUntrustedCerts", true) ? tl.getEndpointDataParameter(connection, "acceptUntrustedCerts", true) : "false"));
+        tl.debug(`acceptUntrustedCerts is set to '${acceptUntrustedCerts}'.`);
+        
+        // Get the Nexus repository details
         const repository: string | undefined = tl.getInput("repository", false);
         const group: string | undefined = tl.getInput("group", false);
         const artifact: string | undefined = tl.getInput("artifact", false);
@@ -80,26 +83,30 @@ async function run() {
             }
         }
 
-        // Retrieve Artifacts - https://help.sonatype.com/repomanager3/rest-and-integration-api/search-api
-        // Works if there is only 1 asset
-        // Invoke-WebRequest -uri "$(nexus-url)service/rest/v1/search/assets/download?group=$(nexus-package-groupid)&name=$(nexus-package-name)&maven.baseVersion=$(nexus-package-version)&maven.extension=zip" -Credential $credential -outfile $(nexus-package-name)-$(nexus-package-version).zip
-        // *** ONLY Works in Nexus 3.16+ ***
-        // Gets latest artifact for a package
-        // Invoke-WebRequest -uri "$(nexus-url)service/rest/v1/search/assets/download?sort=version&repository=$(nexus-repository)&maven.groupId=$(nexus-package-groupid)&maven.artifactId=$(nexus-package-name)&maven.baseVersion=$(nexus-package-version)&maven.extension=jar" -Credential $credential -outfile demo-$(nexus-package-version).jar
-        
-        var options = {
-            host: hostUrl,
+        const buffer = Buffer.from(username + ':' + password);
+        var hostUrl = url.parse(hostUri);
+
+        var options : https.RequestOptions = {
+            host: hostUri,
             path: `/service/rest/v1/search/assets/download?group=${group}&name=${artifact}&maven.baseVersion=${artifactVersion}&maven.extension=${packaging}`,
             method: 'GET',
+            rejectUnauthorized: true,
             headers: {
-                'Authorization': 'Basic ' + new Buffer(username + ':' + password).toString('base64')
+                'Authorization': 'Basic ' + buffer.toString('base64')
              }   
           };
+
+        if(acceptUntrustedCerts)
+        {
+            options.rejectUnauthorized = false;
+        }
+
+        options.agent = new https.Agent(options);
         
         const file = fs.createWriteStream(`${artifact}-${artifactVersion}.${packaging}`);
         var req = https.request(options, function(res) {       
             res.pipe(file);
-          });
+          }).end();
     }
     catch (err) {
         tl.setResult(tl.TaskResult.Failed, err.message);

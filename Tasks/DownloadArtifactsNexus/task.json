@@ -2,9 +2,9 @@
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
     "id": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
     "name": "DownloadArtifactsNexus",
-    "friendlyName": "Download Artifacts - NEXUS",
-    "description": "Download NEXUS Artifact",
-    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
+    "friendlyName": "Download Artifacts - Nexus",
+    "description": "Download Nexus Artifact",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.Nexus-custom-release-artifact-extension)",
     "category": "Deploy",
     "visibility": ["Release"],
     "demands": [],
@@ -17,18 +17,18 @@
     "version": {
         "Major": 1,
         "Minor": 0,
-        "Patch": 0
+        "Patch": 9
     },
     "minimumAgentVersion": "1.99.0",
-    "instanceNameFormat": "Download Artifacts - NEXUS",
+    "instanceNameFormat": "Download Artifacts - Nexus",
     "inputs": [
             {
             "name": "connection",
-            "type": "connectedService:nexus",
-            "label": "NEXUS service connection",
+            "type": "connectedService:Nexus",
+            "label": "Nexus service connection",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "NEXUS service connection"
+            "helpMarkDown": "Nexus service connection"
           },
           {
             "name": "repository",
@@ -39,7 +39,7 @@
             "properties": {
               "EditableOptions": "True"
             },
-            "helpMarkDown": "NEXUS repository"
+            "helpMarkDown": "Nexus repository"
             },
             {
             "name": "group",

@@ -1,5 +1,5 @@
 # NexusPipelineArtifact
-Add support for NEXUS artifact in Azure DevOps Release Pipelines
+Add support for Nexus artifact in Azure DevOps Release Pipelines
 
 # Requirements
 - VSCode https://code.visualstudio.com/

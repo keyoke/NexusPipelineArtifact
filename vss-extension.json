@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
-  "id": "nexus-custom-release-artifact-extension",
+  "id": "Nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.3",
+  "version": "1.0.9",
   "name": "Sonartype Nexus Release Artifact",
   "description": "Add support for Sonartype Nexus as an artifact for Release Pipelines",
   "public": true,
@@ -24,7 +24,7 @@
   },
   "tags": [
     "sonartype",
-    "nexus",
+    "Nexus",
     "continuous",
     "release",
     "deploy",
@@ -36,13 +36,13 @@
     }
   ],
   "icons": {
-    "default": "icon-nexus-logo.png"
+    "default": "icon-Nexus-logo.png"
   },
   "screenshots": [
   ],
   "files": [
     {
-      "path": "icon-nexus-logo.png",
+      "path": "icon-Nexus-logo.png",
       "addressable": true
     },
     {
@@ -51,14 +51,14 @@
   ],
   "contributions": [
       {
-        "id": "nexus-endpoint-type",
+        "id": "Nexus-endpoint-type",
         "description": "Service connection type for Sonartype Nexus",
         "type": "ms.vss-endpoint.service-endpoint-type",
         "targets": [
           "ms.vss-endpoint.endpoint-types"
         ],
         "properties": {
-          "name": "nexus",
+          "name": "Nexus",
           "displayName": "Sonartype Nexus",
           "url": {
             "displayName": "Repository URL"
@@ -74,7 +74,7 @@
                   "inputMode": "textbox",
                   "isConfidential": false,
                   "validation": {
-                    "isRequired": false,
+                    "isRequired": true,
                     "dataType": "string"
                   }
                 },
@@ -85,11 +85,24 @@
                   "inputMode": "passwordBox",
                   "isConfidential": true,
                   "validation": {
-                    "isRequired": false,
+                    "isRequired": true,
                     "dataType": "string"
                   }
                 }
               ]
+            }
+          ],        
+          "inputDescriptors": [
+            {
+              "id": "acceptUntrustedCerts",
+              "name": "Accept untrusted SSL certificates",
+              "description": "Allows self-signed SSL certificates.",
+              "inputMode": "checkbox",
+              "isConfidential": false,
+              "validation": {
+                "isRequired": false,
+                "dataType": "boolean"
+              }
             }
           ],
           "dataSources": [
@@ -106,7 +119,7 @@
         ]
       },
       {
-          "id": "nexus-build-release-task",
+          "id": "Nexus-build-release-task",
           "type": "ms.vss-distributed-task.task",
           "targets": [
               "ms.vss-distributed-task.tasks"
