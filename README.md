@@ -8,7 +8,7 @@ Add support for Nexus artifact in Azure DevOps Release Pipelines
 - Node CLI for Azure DevOps https://github.com/Microsoft/tfs-cli
 
 # Building/Packaging the Extension
- 1. git clone https://github.com/keyoke/GithubEnterpriseServerRMArtifact.git
+ 1. git clone https://github.com/keyoke/NexusPipelineArtifact.git
  2. npm install
  3. npm run package
 
