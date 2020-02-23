@@ -91,11 +91,12 @@ async function run() {
         // Make sure the secret is correctly scrubbed from any logs
         tl.setSecret(authBase64);
 
-        let requestPath : string = `/service/rest/v1/search/assets/download?sort=version&maven.groupId=${group}&maven.artifactId=${artifact}&maven.baseVersion=${baseVersion}&maven.extension=${extension}`;
+        let requestPath : string = `/service/rest/v1/search/assets/download?sort=version&maven.groupId=${group}&maven.artifactId=${artifact}&maven.baseVersion=${baseVersion}&maven.extension=${extension}&maven.classifier`;
 
         // Do we have a classifier
         if (classifier) {
-            requestPath = `${requestPath}&maven.classifier=${classifier}`
+            tl.debug(`Using classifier ${classifier}.`);
+            requestPath = `${requestPath}=${classifier}`
         }
         else
         {
@@ -122,8 +123,7 @@ async function run() {
         // Setup new agent dont use the global one
         options.agent = new https.Agent(options);
        
-        tl.debug(`Search for asset using '${requestUrl.href}${options.path}'.`);
-        //tl.debug(`Search request options '${JSON.stringify(options)}'.`);
+        tl.debug(`Search for asset using '${url.resolve(requestUrl.href, options.path)}'.`);
 
         let req : ClientRequest = https.request(options, function(res : IncomingMessage) {  
             let headers : string = JSON.stringify(res.headers);    
@@ -138,7 +138,6 @@ async function run() {
                 options.path = downloadUrl.path;
 
                 tl.debug(`Download asset using '${downloadUrl.href}'.`);
-                //tl.debug(`Download request options '${JSON.stringify(options)}'.`);
                 let filename : string = path.basename(downloadUrl.pathname);
                 console.log(`Download filename '${filename}'`);
 
@@ -158,10 +157,12 @@ async function run() {
                         console.log(`Successfully downloaded asset '${filename}' using '${downloadUrl.href}'.`);
                     }
                 });
+                inner_req.end();
             }else if (res.statusCode == 404) {
-                throw new Error(`Asset does not exist for '${requestUrl.href}${options.path}'!`);
+                throw new Error(`Asset does not exist for '${url.resolve(requestUrl.href, options.path)}'!`);
             } 
         });
+        req.end();
     }
     catch (err) {
         tl.setResult(tl.TaskResult.Failed, err.message);
