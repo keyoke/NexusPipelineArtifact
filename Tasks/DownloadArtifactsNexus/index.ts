@@ -100,22 +100,21 @@ async function run() {
         const filename : string = `${artifact}-${artifactVersion}.${packaging}`;
         const file : fs.WriteStream = fs.createWriteStream(filename);
         
-        tl.debug(`Downloading file '${filename}' from '${options.path}'.`);
+        tl.debug(`Downloading asset '${filename}' using '${hostUrl}/${options.path}'.`);
 
-        var req = await https.request(options, function(res : IncomingMessage) {      
+        var req = https.request(options, function(res : IncomingMessage) {      
             tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
-            tl.debug(`HTTP Response headers: ${res.headers}.`);
            
             res.on('data', (d) => {
                 file.write(d);
-                //res.pipe(file);
             });
-        });
-        
-        req.on('error', (e : Error) => {
-            throw new Error(`Failed to download file '${e}'.`);
-        });
-        req.end();
+
+            if (res.statusCode == 302) {
+                console.log(`Successfully downloaded asset.`);
+            }else if (res.statusCode == 404) {
+                throw new Error(`Asset does not exist!`);
+            } 
+        }).end();
     }
     catch (err) {
         tl.setResult(tl.TaskResult.Failed, err.message);
