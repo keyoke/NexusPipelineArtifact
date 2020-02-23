@@ -122,13 +122,11 @@ async function run() {
 
         let req = https.request(options, function(res : IncomingMessage) {      
             tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
-           
-            res.on('data', (d) => {
-                file.write(d);
-            });
+
+            res.pipe(file);
 
             if (res.statusCode == 302) {
-                console.log(`Successfully downloaded asset.`);
+                console.log(`Successfully downloaded asset '${filename}'.`);
             }else if (res.statusCode == 404) {
                 throw new Error(`Asset does not exist!`);
             } 
