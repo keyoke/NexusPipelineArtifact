@@ -3,6 +3,7 @@ import url = require('url');
 import shell = require("shelljs");
 import fs = require('fs');
 import https = require('https');
+import { IncomingMessage } from 'http';
 
 async function run() {
     console.log(`Downloading artifact.`);
@@ -73,25 +74,17 @@ async function run() {
         if(agentProxy)
         {
             tl.debug(`Agent proxy is set to '${agentProxy.proxyUrl}'.`);
-
-            // Get The proxy Url
-            var proxyUrl = url.parse(agentProxy.proxyUrl);
-
-            // Is this needed? or is this already included in the url?
-            if (agentProxy.proxyUsername && agentProxy.proxyPassword) {
-                proxyUrl.auth = agentProxy.proxyUsername + ':' + agentProxy.proxyPassword;
-            }
         }
 
+        const hostUrl = url.parse(hostUri);
         const buffer = Buffer.from(username + ':' + password);
-        var hostUrl = url.parse(hostUri);
 
-        var options : https.RequestOptions = {
+        const options : https.RequestOptions = {
             host: hostUrl.hostname,
-            port: hostUrl.port || 443,
+            port: hostUrl.port || 443, // Default to 443 for port
             path: `/service/rest/v1/search/assets/download?group=${group}&name=${artifact}&maven.baseVersion=${artifactVersion}&maven.extension=${packaging}`,
             method: 'GET',
-            rejectUnauthorized: true,
+            rejectUnauthorized: true, // By default ensure we validate SSL certificates
             headers: {
                 'Authorization': 'Basic ' + buffer.toString('base64')
              }   
@@ -103,11 +96,26 @@ async function run() {
         }
 
         options.agent = new https.Agent(options);
+
+        const filename : string = `${artifact}-${artifactVersion}.${packaging}`;
+        const file : fs.WriteStream = fs.createWriteStream(filename);
         
-        const file = fs.createWriteStream(`${artifact}-${artifactVersion}.${packaging}`);
-        var req = https.request(options, function(res) {       
-            res.pipe(file);
-        }).end();
+        tl.debug(`Downloading file '${filename}' from '${options.path}'.`);
+
+        var req = await https.request(options, function(res : IncomingMessage) {      
+            tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
+            tl.debug(`HTTP Response headers: ${res.headers}.`);
+           
+            res.on('data', (d) => {
+                file.write(d);
+                //res.pipe(file);
+            });
+        });
+        
+        req.on('error', (e : Error) => {
+            throw new Error(`Failed to download file '${e}'.`);
+        });
+        req.end();
     }
     catch (err) {
         tl.setResult(tl.TaskResult.Failed, err.message);
