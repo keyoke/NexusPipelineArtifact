@@ -1,9 +1,9 @@
 {
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
     "id": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
-    "name": "DownloadArtifactsNexus",
-    "friendlyName": "Download Artifacts - Nexus",
-    "description": "Download Nexus Artifact",
+    "name": "DownloadArtifactsNexusMavenRepository",
+    "friendlyName": "Download Artifacts - Nexus (Maven Repository)",
+    "description": "Download Nexus Maven Artifact",
     "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.Nexus-custom-release-artifact-extension)",
     "category": "Deploy",
     "visibility": ["Release"],
@@ -17,10 +17,10 @@
     "version": {
         "Major": 1,
         "Minor": 0,
-        "Patch": 16
+        "Patch": 17
     },
     "minimumAgentVersion": "1.99.0",
-    "instanceNameFormat": "Download Artifacts - Nexus",
+    "instanceNameFormat": "Download Artifacts - Nexus (Maven Repository)",
     "inputs": [
             {
             "name": "connection",
@@ -39,7 +39,7 @@
             "properties": {
               "EditableOptions": "True"
             },
-            "helpMarkDown": "Nexus repository"
+            "helpMarkDown": "Name of the Nexus repository in which to look for the component."
             },
             {
             "name": "group",
@@ -50,7 +50,7 @@
             "properties": {
               "EditableOptions": "True"
             },
-            "helpMarkDown": "The Nexus Group Id.  Only letters, numbers, underscore(_), hyphon(-), and dot(.) are allowed."
+            "helpMarkDown": "The Maven groupId for a component."
           },
           {
             "name": "artifact",
@@ -61,29 +61,45 @@
             "properties": {
               "EditableOptions": "True"
             },
-            "helpMarkDown": "Artifact Id"
+            "helpMarkDown": "The Maven artifactId for a component."
           },
           {
-            "name": "artifactVersion",
+            "name": "baseVersion",
             "type": "string",
-            "label": "Artifact Version",
+            "label": "Base Version",
             "defaultValue": "",
             "required": true,
             "properties": {
               "EditableOptions": "True"
             },
-            "helpMarkDown": "Artifact Version"
+            "helpMarkDown": "The base version of the component/asset."
           },
           {
             "name": "packaging",
             "label": "Packaging",
             "type": "string",
             "defaultValue": "",
-            "required": false,
+            "required": true,
             "properties": {
               "EditableOptions": "True"
             },
-            "helpMarkDown": "The Nexus Packaging type: pom, jar, ejb, war, ear, rar, par, maven-archetype, or maven-plugin."
+            "helpMarkDown": "The Maven packaging for a component, which is jar by default. Other values as used in Maven and other build tools are ear, war, maven-plugin, pom, ejb, zip, tar.gz, aar and many others."
+          },
+          {
+            "name": "classifier",
+            "type": "string",
+            "label": "Classifier",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Maven classifier for a component. Common values are javadoc, sources or tests."
+          },
+          {
+            "name": "extension",
+            "type": "string",
+            "label": "Extension",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The extension used for a specific asset of a component."
           },
           {
             "name": "downloadPath",

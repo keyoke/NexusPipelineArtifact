@@ -36,12 +36,20 @@ async function run() {
         tl.debug(`acceptUntrustedCerts is set to '${acceptUntrustedCerts}'.`);
         
         // Get the Nexus repository details
-        const repository: string | undefined = tl.getInput("repository", false);
-        const group: string | undefined = tl.getInput("group", false);
-        const artifact: string | undefined = tl.getInput("artifact", false);
-        const artifactVersion: string | undefined = tl.getInput("artifactVersion", false);
-        const packaging: string | undefined = tl.getInput("packaging", false);
+        const repository: string | undefined = tl.getInput("repository", true);
+        const group: string | undefined = tl.getInput("group", true);
+        const artifact: string | undefined = tl.getInput("artifact", true);
+        const baseVersion: string | undefined = tl.getInput("baseVersion", true);
+        const packaging: string | undefined = tl.getInput("packaging", true);
+        const classifier: string | undefined = tl.getInput("classifier", false);
+        let extension: string | undefined = tl.getInput("extension", false);
         const downloadPath: string | undefined = tl.getInput("downloadPath", false);
+
+        // Do we have a extension
+        if (!extension) {
+            tl.debug('Extension has not been supplied, set default packaging extension.');
+            extension = packaging;
+        }
 
         // Verify artifact download path is set
         if(!downloadPath)
@@ -76,13 +84,23 @@ async function run() {
             tl.debug(`Agent proxy is set to '${agentProxy.proxyUrl}'.`);
         }
 
-        const hostUrl = url.parse(hostUri);
+        const requestUrl = url.parse(hostUri);
         const buffer = Buffer.from(username + ':' + password);
+        let requestPath : string = `/service/rest/v1/search/assets/download?sort=version&maven.groupId=${group}&maven.artifactId=${artifact}&maven.baseVersion=${baseVersion}&maven.extension=${extension}`;
+
+        // Do we have a classifier
+        if (classifier) {
+            requestPath = `${requestPath}&maven.classifier=${classifier}`
+        }
+        else
+        {
+            tl.debug('Classifier has not been supplied.');
+        }
 
         const options : https.RequestOptions = {
-            host: hostUrl.hostname,
-            port: hostUrl.port || 443, // Default to 443 for port
-            path: `/service/rest/v1/search/assets/download?group=${group}&name=${artifact}&maven.baseVersion=${artifactVersion}&maven.extension=${packaging}`,
+            host: requestUrl.hostname,
+            port: requestUrl.port || 443, // Default to 443 for port
+            path: requestPath,
             method: 'GET',
             rejectUnauthorized: true, // By default ensure we validate SSL certificates
             headers: {
@@ -97,12 +115,12 @@ async function run() {
 
         options.agent = new https.Agent(options);
 
-        const filename : string = `${artifact}-${artifactVersion}.${packaging}`;
+        const filename : string = `${artifact}-${baseVersion}.${extension}`;
         const file : fs.WriteStream = fs.createWriteStream(filename);
         
-        tl.debug(`Downloading asset '${filename}' using '${hostUrl}/${options.path}'.`);
+        tl.debug(`Downloading asset '${filename}' using '${requestUrl.href}${options.path}'.`);
 
-        var req = https.request(options, function(res : IncomingMessage) {      
+        let req = https.request(options, function(res : IncomingMessage) {      
             tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
            
             res.on('data', (d) => {
