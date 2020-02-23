@@ -126,9 +126,9 @@ async function run() {
             res.pipe(file);
 
             if (res.statusCode == 302) {
-                console.log(`Successfully downloaded asset '${filename}'.`);
+                console.log(`Successfully downloaded asset '${filename}' using '${requestUrl.href}${options.path}'.`);
             }else if (res.statusCode == 404) {
-                throw new Error(`Asset does not exist!`);
+                throw new Error(`Asset does not exist for '${requestUrl.href}${options.path}'!`);
             } 
         }).end();
     }
