@@ -1,9 +1,10 @@
 import tl = require('azure-pipelines-task-lib/task');
 import url = require('url');
 import shell = require("shelljs");
+import path = require("path");
 import fs = require('fs');
-import https = require('https');
 import { IncomingMessage } from 'http';
+import https = require('https');
 
 async function run() {
     console.log(`Downloading artifact.`);
@@ -85,7 +86,10 @@ async function run() {
         }
 
         const requestUrl = url.parse(hostUri);
-        const buffer = Buffer.from(username + ':' + password);
+        const authBase64 = Buffer.from(username + ':' + password).toString('base64');
+        // Make sure the secret is correctly scrubbed from any logs
+        tl.setSecret(authBase64);
+
         let requestPath : string = `/service/rest/v1/search/assets/download?sort=version&maven.groupId=${group}&maven.artifactId=${artifact}&maven.baseVersion=${baseVersion}&maven.extension=${extension}`;
 
         // Do we have a classifier
@@ -97,14 +101,14 @@ async function run() {
             tl.debug('Classifier has not been supplied.');
         }
 
-        const options : https.RequestOptions = {
+        let options : https.RequestOptions = {
             host: requestUrl.hostname,
             port: requestUrl.port || 443, // Default to 443 for port
             path: requestPath,
             method: 'GET',
             rejectUnauthorized: true, // By default ensure we validate SSL certificates
             headers: {
-                'Authorization': 'Basic ' + buffer.toString('base64')
+                'Authorization': 'Basic ' + authBase64
              }   
         };
 
@@ -114,19 +118,43 @@ async function run() {
         }
 
         options.agent = new https.Agent(options);
+       
+        tl.debug(`Search for asset using '${requestUrl.href}${options.path}'.`);
+        tl.debug(`Search request options '${JSON.stringify(options)}'.`);
 
-        const filename : string = `${artifact}-${baseVersion}.${extension}`;
-        const file : fs.WriteStream = fs.createWriteStream(filename);
-        
-        tl.debug(`Downloading asset '${filename}' using '${requestUrl.href}${options.path}'.`);
-
-        let req = https.request(options, function(res : IncomingMessage) {      
+        let req = https.request(options, function(res : IncomingMessage) {  
+            let headers = JSON.stringify(res.headers);    
             tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
-
-            res.pipe(file);
+            tl.debug(`HTTP Response Headers: ${headers}.`);
 
             if (res.statusCode == 302) {
-                console.log(`Successfully downloaded asset '${filename}' using '${requestUrl.href}${options.path}'.`);
+                const downloadUrl = url.parse(res.headers.location);
+                // Set correect options for the new request to download our file
+                options.host = downloadUrl.hostname;
+                options.port = downloadUrl.port || 443
+                options.path = downloadUrl.path;
+
+                tl.debug(`Download asset using '${downloadUrl.href}'.`);
+                tl.debug(`Download request options '${JSON.stringify(options)}'.`);
+                let filename : string = path.basename(downloadUrl.pathname);
+                console.log(`Download filename '${filename}'`);
+
+                https.request(options, function(inner_res : IncomingMessage) { 
+                    let headers = JSON.stringify(inner_res.headers);
+                    tl.debug(`HTTP Response Status Code: ${inner_res.statusCode}.`);
+                    tl.debug(`HTTP Response Headers: ${headers}.`);
+
+                    if(inner_res.statusCode == 200)
+                    {
+                        const file : fs.WriteStream = fs.createWriteStream(filename);
+                        inner_res.on('data', function(chunk){
+                            file.write(chunk);
+                        }).on('end', function(){
+                            file.end();
+                        });
+                        console.log(`Successfully downloaded asset '${filename}' using '${downloadUrl.href}'.`);
+                    }
+                }).end();
             }else if (res.statusCode == 404) {
                 throw new Error(`Asset does not exist for '${requestUrl.href}${options.path}'!`);
             } 
