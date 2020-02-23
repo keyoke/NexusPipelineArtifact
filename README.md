@@ -1,5 +1,5 @@
 # NexusPipelineArtifact
-Add support for Nexus artifact in Azure DevOps Release Pipelines
+Add support for the Sonatype Nexus Repository as an artifact in Azure Pipelines
 
 # Requirements
 - VSCode https://code.visualstudio.com/

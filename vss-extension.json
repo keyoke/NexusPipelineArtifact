@@ -2,9 +2,9 @@
   "manifestVersion": 1,
   "id": "Nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.27",
-  "name": "Sonartype Nexus Release Artifact",
-  "description": "Add support for Sonartype Nexus as an artifact for Release Pipelines",
+  "version": "1.0.29",
+  "name": "Sonatype Nexus Release Artifact",
+  "description": "Add support for Sonatype Nexus as an artifact for Release Pipelines",
   "public": true,
   "galleryFlags": [
     "Preview"
@@ -23,7 +23,7 @@
     "uri": "https://github.com/keyoke/NexusPipelineArtifact"
   },
   "tags": [
-    "sonartype",
+    "Sonatype",
     "Nexus",
     "continuous",
     "release",
@@ -52,14 +52,14 @@
   "contributions": [
       {
         "id": "Nexus-endpoint-type",
-        "description": "Service connection type for Sonartype Nexus",
+        "description": "Service connection type for Sonatype Nexus",
         "type": "ms.vss-endpoint.service-endpoint-type",
         "targets": [
           "ms.vss-endpoint.endpoint-types"
         ],
         "properties": {
           "name": "Nexus",
-          "displayName": "Sonartype Nexus",
+          "displayName": "Sonatype Nexus",
           "url": {
             "displayName": "Repository URL"
           },
