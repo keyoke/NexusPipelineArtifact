@@ -158,8 +158,10 @@ async function run() {
                     }
                 });
                 inner_req.end();
-            }else if (res.statusCode == 404) {
-                throw new Error(`Asset does not exist for '${url.resolve(requestUrl.href, options.path)}'!`);
+            }else if (res.statusCode == 400) {
+                throw new Error(`Search '${url.resolve(requestUrl.href, options.path)}' returned multiple assets, please refine search criteria to find a single asset!`);
+            } else if (res.statusCode == 404) {
+                throw new Error(`Asset does not exist for search '${url.resolve(requestUrl.href, options.path)}'!`);
             } 
         });
         req.end();
