@@ -1,4 +1,4 @@
-# Sonartype Nexus artifact for Release Pipelines
+# sonatype Nexus artifact for Release Pipelines
 This extension provides PREVIEW support for Nexus repositories when leveraging Release Pipelines.
 
 ## TODO
