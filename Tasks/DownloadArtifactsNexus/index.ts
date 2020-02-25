@@ -4,7 +4,6 @@ import shell = require("shelljs");
 import path = require("path");
 import fs = require('fs');
 import http = require('http');
-import { IncomingMessage, ClientRequest } from 'http';
 import https = require('https');
 
 async function run() {
@@ -87,10 +86,6 @@ async function run() {
         }
 
         const requestUrl : url.UrlWithStringQuery = url.parse(hostUri);
-        const authBase64 : string = Buffer.from(username + ':' + password).toString('base64');
-        // Make sure the secret is correctly scrubbed from any logs
-        tl.setSecret(authBase64);
-
         let requestPath : string = `/service/rest/v1/search/assets/download?sort=version&maven.groupId=${group}&maven.artifactId=${artifact}&maven.baseVersion=${baseVersion}&maven.extension=${extension}&maven.classifier`;
 
         // Do we have a classifier
@@ -103,73 +98,151 @@ async function run() {
             tl.debug('Classifier has not been supplied.');
         }
 
-        let options : https.RequestOptions = {
-            host: requestUrl.hostname,
-            port: requestUrl.port || 443, // Default to 443 for port
-            path: requestPath,
-            method: 'GET',
-            rejectUnauthorized: true, // By default ensure we validate SSL certificates
-            headers: {
-                'Authorization': 'Basic ' + authBase64
-             }   
-        };
-
-        if(acceptUntrustedCerts)
+        // need to refactor this logic to reduce duplication of code
+        if (hostUri.indexOf("https://") === 0) {
+            execute_https(requestUrl, requestPath, username, password, acceptUntrustedCerts);
+        }
+        else
         {
-            // We should accept self signed certificates
-            options.rejectUnauthorized = false;
+            execute_http(requestUrl, requestPath, username, password);
         }
 
-        // Setup new agent dont use the global one
-        options.agent = new https.Agent(options);
-       
-        tl.debug(`Search for asset using '${url.resolve(requestUrl.href, options.path)}'.`);
-
-        let req : ClientRequest = https.request(options, function(res : IncomingMessage) {  
-            let headers : string = JSON.stringify(res.headers);    
-            tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
-            tl.debug(`HTTP Response Headers: ${headers}.`);
-
-            if (res.statusCode == 302) {
-                const downloadUrl : url.UrlWithStringQuery = url.parse(res.headers.location);
-                // Set correect options for the new request to download our file
-                options.host = downloadUrl.hostname;
-                options.port = downloadUrl.port || 443
-                options.path = downloadUrl.path;
-
-                tl.debug(`Download asset using '${downloadUrl.href}'.`);
-                let filename : string = path.basename(downloadUrl.pathname);
-                console.log(`Download filename '${filename}'`);
-
-                let inner_req : ClientRequest = https.request(options, function(inner_res : IncomingMessage) { 
-                    let headers : string = JSON.stringify(inner_res.headers);
-                    tl.debug(`HTTP Response Status Code: ${inner_res.statusCode}.`);
-                    tl.debug(`HTTP Response Headers: ${headers}.`);
-
-                    if(inner_res.statusCode == 200)
-                    {
-                        const file : fs.WriteStream = fs.createWriteStream(filename);
-                        inner_res.on('data', function(chunk : any){
-                            file.write(chunk);
-                        }).on('end', function(){
-                            file.end();
-                        });
-                        console.log(`Successfully downloaded asset '${filename}' using '${downloadUrl.href}'.`);
-                    }
-                });
-                inner_req.end();
-            }else if (res.statusCode == 400) {
-                throw new Error(`Search '${url.resolve(requestUrl.href, options.path)}' returned multiple assets, please refine search criteria to find a single asset!`);
-            } else if (res.statusCode == 404) {
-                throw new Error(`Asset does not exist for search '${url.resolve(requestUrl.href, options.path)}'!`);
-            } 
-        });
-        req.end();
     }
     catch (err) {
         tl.setResult(tl.TaskResult.Failed, err.message);
     }
     console.log(`Downloading artifact completed.`);
+}
+
+function execute_http(requestUrl : url.UrlWithStringQuery, requestPath : string, username : string, password : string)
+{
+    tl.debug(`execute_http.`);
+
+    const authBase64 : string = Buffer.from(username + ':' + password).toString('base64');
+    // Make sure the secret is correctly scrubbed from any logs
+    tl.setSecret(authBase64);
+
+    let options : http.RequestOptions = {
+        host: requestUrl.hostname,
+        port: requestUrl.port || 80, // Default to 80 for port
+        path: requestPath,
+        method: 'GET',
+        headers: {
+            'Authorization': 'Basic ' + authBase64
+         }   
+    };
+
+    // Setup new agent dont use the global one
+    options.agent = new http.Agent(options);
+   
+    tl.debug(`Search for asset using '${url.resolve(requestUrl.href, options.path)}'.`);
+
+    let req : http.ClientRequest = http.request(options, function(res : http.IncomingMessage) {  
+        let headers : string = JSON.stringify(res.headers);    
+        tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
+        tl.debug(`HTTP Response Headers: ${headers}.`);
+
+        if (res.statusCode == 302) {
+            const downloadUrl : url.UrlWithStringQuery = url.parse(res.headers.location);
+            // Set correect options for the new request to download our file
+            options.host = downloadUrl.hostname;
+            options.port = downloadUrl.port || 80
+            options.path = downloadUrl.path;
+
+            tl.debug(`Download asset using '${downloadUrl.href}'.`);
+            let filename : string = path.basename(downloadUrl.pathname);
+            console.log(`Download filename '${filename}'`);
+
+            let inner_req : http.ClientRequest = http.request(options, function(inner_res : http.IncomingMessage) { 
+                let headers : string = JSON.stringify(inner_res.headers);
+                tl.debug(`HTTP Response Status Code: ${inner_res.statusCode}.`);
+                tl.debug(`HTTP Response Headers: ${headers}.`);
+
+                if(inner_res.statusCode == 200)
+                {
+                    const file : fs.WriteStream = fs.createWriteStream(filename);
+                    inner_res.on('data', function(chunk : any){
+                        file.write(chunk);
+                    }).on('end', function(){
+                        file.end();
+                    });
+                    console.log(`Successfully downloaded asset '${filename}' using '${downloadUrl.href}'.`);
+                }
+            });
+            inner_req.end();
+        }else if (res.statusCode == 400) {
+            throw new Error(`Search '${url.resolve(requestUrl.href, options.path)}' returned multiple assets, please refine search criteria to find a single asset!`);
+        } else if (res.statusCode == 404) {
+            throw new Error(`Asset does not exist for search '${url.resolve(requestUrl.href, options.path)}'!`);
+        } 
+    });
+    req.end();
+}
+
+function execute_https(requestUrl : url.UrlWithStringQuery, requestPath : string, username : string, password : string, acceptUntrustedCerts : boolean)
+{
+    tl.debug(`execute_https.`);
+
+    const authBase64 : string = Buffer.from(username + ':' + password).toString('base64');
+    // Make sure the secret is correctly scrubbed from any logs
+    tl.setSecret(authBase64);
+
+    let options : https.RequestOptions = {
+        host: requestUrl.hostname,
+        port: requestUrl.port || 443, // Default to 443 for port
+        path: requestPath,
+        method: 'GET',
+        rejectUnauthorized: !acceptUntrustedCerts, // By default ensure we validate SSL certificates
+        headers: {
+            'Authorization': 'Basic ' + authBase64
+         }   
+    };
+
+    // Setup new agent dont use the global one
+    options.agent = new https.Agent(options);
+   
+    tl.debug(`Search for asset using '${url.resolve(requestUrl.href, options.path)}'.`);
+
+    let req : http.ClientRequest = https.request(options, function(res : http.IncomingMessage) {  
+        let headers : string = JSON.stringify(res.headers);    
+        tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
+        tl.debug(`HTTP Response Headers: ${headers}.`);
+
+        if (res.statusCode == 302) {
+            const downloadUrl : url.UrlWithStringQuery = url.parse(res.headers.location);
+            // Set correect options for the new request to download our file
+            options.host = downloadUrl.hostname;
+            options.port = downloadUrl.port || 443
+            options.path = downloadUrl.path;
+
+            tl.debug(`Download asset using '${downloadUrl.href}'.`);
+            let filename : string = path.basename(downloadUrl.pathname);
+            console.log(`Download filename '${filename}'`);
+
+            let inner_req : http.ClientRequest = https.request(options, function(inner_res : http.IncomingMessage) { 
+                let headers : string = JSON.stringify(inner_res.headers);
+                tl.debug(`HTTP Response Status Code: ${inner_res.statusCode}.`);
+                tl.debug(`HTTP Response Headers: ${headers}.`);
+
+                if(inner_res.statusCode == 200)
+                {
+                    const file : fs.WriteStream = fs.createWriteStream(filename);
+                    inner_res.on('data', function(chunk : any){
+                        file.write(chunk);
+                    }).on('end', function(){
+                        file.end();
+                    });
+                    console.log(`Successfully downloaded asset '${filename}' using '${downloadUrl.href}'.`);
+                }
+            });
+            inner_req.end();
+        }else if (res.statusCode == 400) {
+            throw new Error(`Search '${url.resolve(requestUrl.href, options.path)}' returned multiple assets, please refine search criteria to find a single asset!`);
+        } else if (res.statusCode == 404) {
+            throw new Error(`Asset does not exist for search '${url.resolve(requestUrl.href, options.path)}'!`);
+        } 
+    });
+    req.end();
 }
 
 run();
