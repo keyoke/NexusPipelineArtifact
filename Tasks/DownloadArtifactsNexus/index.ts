@@ -98,6 +98,7 @@ async function run() {
             tl.debug('Classifier has not been supplied.');
         }
 
+        tl.debug(`Search for asset using '${url.resolve(requestUrl.href, requestPath)}'.`);
         // need to refactor this logic to reduce duplication of code
         if (hostUri.indexOf("https://") === 0) {
             execute_https(requestUrl, requestPath, username, password, acceptUntrustedCerts);
@@ -106,6 +107,7 @@ async function run() {
         {
             execute_http(requestUrl, requestPath, username, password);
         }
+        tl.debug(`Completing search for asset using '${url.resolve(requestUrl.href, requestPath)}'.`);
 
     }
     catch (err) {
@@ -119,12 +121,13 @@ function execute_http(requestUrl : url.UrlWithStringQuery, requestPath : string,
     tl.debug(`execute_http.`);
 
     const authBase64 : string = Buffer.from(username + ':' + password).toString('base64');
+
     // Make sure the secret is correctly scrubbed from any logs
     tl.setSecret(authBase64);
 
     let options : http.RequestOptions = {
         host: requestUrl.hostname,
-        port: requestUrl.port || 80, // Default to 80 for port
+        port: requestUrl.port, 
         path: requestPath,
         method: 'GET',
         headers: {
@@ -135,48 +138,8 @@ function execute_http(requestUrl : url.UrlWithStringQuery, requestPath : string,
     // Setup new agent dont use the global one
     options.agent = new http.Agent(options);
    
-    tl.debug(`Search for asset using '${url.resolve(requestUrl.href, options.path)}'.`);
-
-    let req : http.ClientRequest = http.request(options, function(res : http.IncomingMessage) {  
-        let headers : string = JSON.stringify(res.headers);    
-        tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
-        tl.debug(`HTTP Response Headers: ${headers}.`);
-
-        if (res.statusCode == 302) {
-            const downloadUrl : url.UrlWithStringQuery = url.parse(res.headers.location);
-            // Set correect options for the new request to download our file
-            options.host = downloadUrl.hostname;
-            options.port = downloadUrl.port || 80
-            options.path = downloadUrl.path;
-
-            tl.debug(`Download asset using '${downloadUrl.href}'.`);
-            let filename : string = path.basename(downloadUrl.pathname);
-            console.log(`Download filename '${filename}'`);
-
-            let inner_req : http.ClientRequest = http.request(options, function(inner_res : http.IncomingMessage) { 
-                let headers : string = JSON.stringify(inner_res.headers);
-                tl.debug(`HTTP Response Status Code: ${inner_res.statusCode}.`);
-                tl.debug(`HTTP Response Headers: ${headers}.`);
-
-                if(inner_res.statusCode == 200)
-                {
-                    const file : fs.WriteStream = fs.createWriteStream(filename);
-                    inner_res.on('data', function(chunk : any){
-                        file.write(chunk);
-                    }).on('end', function(){
-                        file.end();
-                    });
-                    console.log(`Successfully downloaded asset '${filename}' using '${downloadUrl.href}'.`);
-                }
-            });
-            inner_req.end();
-        }else if (res.statusCode == 400) {
-            throw new Error(`Search '${url.resolve(requestUrl.href, options.path)}' returned multiple assets, please refine search criteria to find a single asset!`);
-        } else if (res.statusCode == 404) {
-            throw new Error(`Asset does not exist for search '${url.resolve(requestUrl.href, options.path)}'!`);
-        } 
-    });
-    req.end();
+    // execute the http request
+    execute_request(http, options);
 }
 
 function execute_https(requestUrl : url.UrlWithStringQuery, requestPath : string, username : string, password : string, acceptUntrustedCerts : boolean)
@@ -184,12 +147,13 @@ function execute_https(requestUrl : url.UrlWithStringQuery, requestPath : string
     tl.debug(`execute_https.`);
 
     const authBase64 : string = Buffer.from(username + ':' + password).toString('base64');
+
     // Make sure the secret is correctly scrubbed from any logs
     tl.setSecret(authBase64);
 
     let options : https.RequestOptions = {
         host: requestUrl.hostname,
-        port: requestUrl.port || 443, // Default to 443 for port
+        port: requestUrl.port,
         path: requestPath,
         method: 'GET',
         rejectUnauthorized: !acceptUntrustedCerts, // By default ensure we validate SSL certificates
@@ -200,29 +164,40 @@ function execute_https(requestUrl : url.UrlWithStringQuery, requestPath : string
 
     // Setup new agent dont use the global one
     options.agent = new https.Agent(options);
-   
-    tl.debug(`Search for asset using '${url.resolve(requestUrl.href, options.path)}'.`);
 
-    let req : http.ClientRequest = https.request(options, function(res : http.IncomingMessage) {  
-        let headers : string = JSON.stringify(res.headers);    
+    // execute the https request
+    execute_request(https, options);
+}
+
+function execute_request(client : any, options :  http.RequestOptions | https.RequestOptions)
+{
+    tl.debug(`HTTP Request Options: ${JSON.stringify(options)}.`);  
+
+    // Set a default port if its not already set
+    SetDefaultPort(options); 
+
+    let req : http.ClientRequest = http.request(options, function(res : http.IncomingMessage) {  
         tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
-        tl.debug(`HTTP Response Headers: ${headers}.`);
+        tl.debug(`HTTP Response Headers: ${JSON.stringify(res.headers)}.`);
 
         if (res.statusCode == 302) {
             const downloadUrl : url.UrlWithStringQuery = url.parse(res.headers.location);
-            // Set correect options for the new request to download our file
+
+            // Set correct options for the new request to download our file
             options.host = downloadUrl.hostname;
-            options.port = downloadUrl.port || 443
             options.path = downloadUrl.path;
+            options.port = downloadUrl.port;
+
+            // Set a default port if its not already set
+            SetDefaultPort(options); 
 
             tl.debug(`Download asset using '${downloadUrl.href}'.`);
             let filename : string = path.basename(downloadUrl.pathname);
             console.log(`Download filename '${filename}'`);
 
-            let inner_req : http.ClientRequest = https.request(options, function(inner_res : http.IncomingMessage) { 
-                let headers : string = JSON.stringify(inner_res.headers);
+            let inner_req : http.ClientRequest = http.request(options, function(inner_res : http.IncomingMessage) { 
                 tl.debug(`HTTP Response Status Code: ${inner_res.statusCode}.`);
-                tl.debug(`HTTP Response Headers: ${headers}.`);
+                tl.debug(`HTTP Response Headers: ${JSON.stringify(inner_res.headers)}.`);
 
                 if(inner_res.statusCode == 200)
                 {
@@ -237,12 +212,31 @@ function execute_https(requestUrl : url.UrlWithStringQuery, requestPath : string
             });
             inner_req.end();
         }else if (res.statusCode == 400) {
-            throw new Error(`Search '${url.resolve(requestUrl.href, options.path)}' returned multiple assets, please refine search criteria to find a single asset!`);
+            throw new Error(`Search returned multiple assets, please refine search criteria to find a single asset!`);
         } else if (res.statusCode == 404) {
-            throw new Error(`Asset does not exist for search '${url.resolve(requestUrl.href, options.path)}'!`);
+            throw new Error(`Asset does not exist for search!`);
         } 
     });
     req.end();
+}
+
+function SetDefaultPort(options: http.RequestOptions | https.RequestOptions) {
+    if(!options.port)
+    {
+        tl.debug('Port not explicitly set.');
+        if (options.agent instanceof https.Agent) {
+            tl.debug('Using default https port(443)');
+            options.port = 443;
+        }
+        else {
+            tl.debug('Using default http port(80)');
+            options.port = 80;
+        }
+    }
+    else
+    {
+        tl.debug(`Port explicitly set(${options.port}).`);
+    }
 }
 
 run();
