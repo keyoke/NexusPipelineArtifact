@@ -127,7 +127,6 @@ function execute_http(requestUrl : url.UrlWithStringQuery, requestPath : string,
 
     let options : http.RequestOptions = {
         host: requestUrl.hostname,
-        port: requestUrl.port, 
         path: requestPath,
         method: 'GET',
         headers: {
@@ -137,6 +136,7 @@ function execute_http(requestUrl : url.UrlWithStringQuery, requestPath : string,
 
     // Setup new agent dont use the global one
     options.agent = new http.Agent(options);
+    options.port = requestUrl.port || options.defaultPort;
    
     // execute the http request
     execute_request(http, options);
@@ -153,7 +153,6 @@ function execute_https(requestUrl : url.UrlWithStringQuery, requestPath : string
 
     let options : https.RequestOptions = {
         host: requestUrl.hostname,
-        port: requestUrl.port,
         path: requestPath,
         method: 'GET',
         rejectUnauthorized: !acceptUntrustedCerts, // By default ensure we validate SSL certificates
@@ -164,6 +163,7 @@ function execute_https(requestUrl : url.UrlWithStringQuery, requestPath : string
 
     // Setup new agent dont use the global one
     options.agent = new https.Agent(options);
+    options.port = requestUrl.port || options.defaultPort;
 
     // execute the https request
     execute_request(https, options);
@@ -173,10 +173,7 @@ function execute_request(client : any, options :  http.RequestOptions | https.Re
 {
     tl.debug(`HTTP Request Options: ${JSON.stringify(options)}.`);  
 
-    // Set a default port if its not already set
-    SetDefaultPort(options); 
-
-    let req : http.ClientRequest = http.request(options, function(res : http.IncomingMessage) {  
+    let req : http.ClientRequest = client.request(options, function(res : http.IncomingMessage) {  
         tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
         tl.debug(`HTTP Response Headers: ${JSON.stringify(res.headers)}.`);
 
@@ -186,16 +183,13 @@ function execute_request(client : any, options :  http.RequestOptions | https.Re
             // Set correct options for the new request to download our file
             options.host = downloadUrl.hostname;
             options.path = downloadUrl.path;
-            options.port = downloadUrl.port;
-
-            // Set a default port if its not already set
-            SetDefaultPort(options); 
+            options.port = downloadUrl.port || options.defaultPort;
 
             tl.debug(`Download asset using '${downloadUrl.href}'.`);
             let filename : string = path.basename(downloadUrl.pathname);
             console.log(`Download filename '${filename}'`);
 
-            let inner_req : http.ClientRequest = http.request(options, function(inner_res : http.IncomingMessage) { 
+            let inner_req : http.ClientRequest = client.request(options, function(inner_res : http.IncomingMessage) { 
                 tl.debug(`HTTP Response Status Code: ${inner_res.statusCode}.`);
                 tl.debug(`HTTP Response Headers: ${JSON.stringify(inner_res.headers)}.`);
 
@@ -218,25 +212,6 @@ function execute_request(client : any, options :  http.RequestOptions | https.Re
         } 
     });
     req.end();
-}
-
-function SetDefaultPort(options: http.RequestOptions | https.RequestOptions) {
-    if(!options.port)
-    {
-        tl.debug('Port not explicitly set.');
-        if (options.agent instanceof https.Agent) {
-            tl.debug('Using default https port(443)');
-            options.port = 443;
-        }
-        else {
-            tl.debug('Using default http port(80)');
-            options.port = 80;
-        }
-    }
-    else
-    {
-        tl.debug(`Port explicitly set(${options.port}).`);
-    }
 }
 
 run();
