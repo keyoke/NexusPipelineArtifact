@@ -86,8 +86,8 @@ async function run() {
         }
 
         const requestUrl : url.UrlWithStringQuery = url.parse(hostUri);
-        let requestPath : string = `/service/rest/v1/search/assets/download?sort=version&maven.groupId=${group}&maven.artifactId=${artifact}&maven.baseVersion=${baseVersion}&maven.extension=${extension}&maven.classifier`;
-
+        let requestPath : string = `/service/local/artifact/maven/redirect?g=${group}&a=${artifact}&v=${baseVersion}&e=${extension}&c`;
+        
         // Do we have a classifier
         if (classifier) {
             tl.debug(`Using classifier ${classifier}.`);
