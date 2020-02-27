@@ -86,7 +86,8 @@ async function run() {
         }
 
         const requestUrl : url.UrlWithStringQuery = url.parse(hostUri);
-        let requestPath : string = `/service/rest/v1/search/assets/download?sort=version&maven.groupId=${group}&maven.artifactId=${artifact}&maven.baseVersion=${baseVersion}&maven.extension=${extension}&maven.classifier`;
+        // https://help.sonatype.com/repomanager3/rest-and-integration-api/search-api
+        let requestPath : string = `/service/rest/v1/search/assets/download?sort=version&repository=${repository}&maven.groupId=${group}&maven.artifactId=${artifact}&maven.baseVersion=${baseVersion}&maven.extension=${extension}&maven.classifier`;
 
         // Do we have a classifier
         if (classifier) {

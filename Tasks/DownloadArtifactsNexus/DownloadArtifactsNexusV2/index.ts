@@ -46,12 +46,6 @@ async function run() {
         let extension: string | undefined = tl.getInput("extension", false);
         const downloadPath: string | undefined = tl.getInput("downloadPath", false);
 
-        // Do we have a extension
-        if (!extension) {
-            tl.debug('Extension has not been supplied, set default packaging extension.');
-            extension = packaging;
-        }
-
         // Verify artifact download path is set
         if(!downloadPath)
         {
@@ -86,12 +80,23 @@ async function run() {
         }
 
         const requestUrl : url.UrlWithStringQuery = url.parse(hostUri);
-        let requestPath : string = `/service/local/artifact/maven/redirect?g=${group}&a=${artifact}&v=${baseVersion}&e=${extension}&c`;
-        
+        // https://repository.sonatype.org/nexus-restlet1x-plugin/default/docs/path__artifact_maven_redirect.html
+        let requestPath : string = `/service/local/artifact/maven/redirect?r=${repository}&g=${group}&a=${artifact}&v=${baseVersion}&p=${packaging}`;
+
+        // Do we have a extension
+        if (extension) {
+            tl.debug(`Using extension ${extension}.`);
+            requestPath = `${requestPath}&e=${extension}`
+        }
+        else
+        {
+            tl.debug('Extension has not been supplied, set default packaging extension.');
+        }
+
         // Do we have a classifier
         if (classifier) {
             tl.debug(`Using classifier ${classifier}.`);
-            requestPath = `${requestPath}=${classifier}`
+            requestPath = `${requestPath}&c=${classifier}`
         }
         else
         {
