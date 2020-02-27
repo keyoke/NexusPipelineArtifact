@@ -4,7 +4,7 @@
     "name": "DownloadArtifactsNexusMavenRepository",
     "friendlyName": "Download Artifacts - Nexus (Maven Repository)",
     "description": "Download Nexus Maven Artifact",
-    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.Nexus-custom-release-artifact-extension)",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
     "category": "Deploy",
     "visibility": ["Release"],
     "demands": [],
@@ -15,16 +15,16 @@
     "preview": true,
     "author": "soft-cor",
     "version": {
-        "Major": 1,
+        "Major": 3,
         "Minor": 0,
-        "Patch": 36
+        "Patch": 0
     },
     "minimumAgentVersion": "1.99.0",
     "instanceNameFormat": "Download Artifacts - Nexus (Maven Repository)",
     "inputs": [
             {
             "name": "connection",
-            "type": "connectedService:Nexus",
+            "type": "connectedService:nexus",
             "label": "Nexus service connection",
             "defaultValue": "",
             "required": true,

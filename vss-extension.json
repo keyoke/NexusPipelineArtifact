@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
-  "id": "Nexus-custom-release-artifact-extension",
+  "id": "nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.36",
+  "version": "1.0.38",
   "name": "Sonatype Nexus Release Artifact",
   "description": "Add support for Sonatype Nexus as an artifact for Release Pipelines",
   "public": true,
@@ -36,13 +36,13 @@
     }
   ],
   "icons": {
-    "default": "icon-Nexus-logo.png"
+    "default": "icon-nexus-logo.png"
   },
   "screenshots": [
   ],
   "files": [
     {
-      "path": "icon-Nexus-logo.png",
+      "path": "icon-nexus-logo.png",
       "addressable": true
     },
     {
@@ -51,14 +51,14 @@
   ],
   "contributions": [
       {
-        "id": "Nexus-endpoint-type",
+        "id": "nexus-endpoint-type",
         "description": "Service connection type for Sonatype Nexus",
         "type": "ms.vss-endpoint.service-endpoint-type",
         "targets": [
           "ms.vss-endpoint.endpoint-types"
         ],
         "properties": {
-          "name": "Nexus",
+          "name": "nexus",
           "displayName": "Sonatype Nexus",
           "url": {
             "displayName": "Repository URL"
@@ -119,7 +119,7 @@
         ]
       },
       {
-          "id": "Nexus-build-release-task",
+          "id": "nexus-build-release-task",
           "type": "ms.vss-distributed-task.task",
           "targets": [
               "ms.vss-distributed-task.tasks"
