@@ -90,28 +90,28 @@ async function run() {
 
         // Do we have a extension
         if (extension) {
-            tl.debug(`Using extension ${extension}.`);
+            console.log(`Using extension ${extension}.`);
             requestPath = `${requestPath}&e=${extension}`
         }
         else
         {
-            tl.debug('Extension has not been supplied.');
+            console.log('Extension has not been supplied.');
         }
 
         // Do we have a classifier
         if (classifier) {
-            tl.debug(`Using classifier ${classifier}.`);
+            console.log(`Using classifier ${classifier}.`);
             requestPath = `${requestPath}&c=${classifier}`
         }
         else
         {
-            tl.debug('Classifier has not been supplied.');
+            console.log('Classifier has not been supplied.');
         }
         
         // Build the final search uri
         const searchUri : URL = new URL(path.join(hostUri.pathname, requestPath), hostUri);
 
-        tl.debug(`Search for asset using '${searchUri}'.`);
+        console.log(`Search for asset using '${searchUri}'.`);
         // need to refactor this logic to reduce duplication of code
         if (searchUri.protocol === "https:")  {
             helper.execute_https(searchUri, username, password, acceptUntrustedCerts);
@@ -120,7 +120,7 @@ async function run() {
         {
             helper.execute_http(searchUri, username, password);
         }
-        tl.debug(`Completing search for asset using '${searchUri}'.`);
+        console.log(`Completing search for asset using '${searchUri}'.`);
 
     }
     catch (err) {

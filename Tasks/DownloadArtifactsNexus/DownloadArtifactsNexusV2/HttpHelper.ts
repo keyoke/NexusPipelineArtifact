@@ -66,7 +66,7 @@ export class HttpHelper {
             tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
             tl.debug(`HTTP Response Headers: ${JSON.stringify(res.headers)}.`);
 
-            if (res.statusCode == 302) {
+            if (res.statusCode == 302 || res.statusCode == 307) {
                 const downloadUri : URL = new URL(res.headers.location);
 
                 // Set correct options for the new request to download our file
