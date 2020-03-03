@@ -2,8 +2,8 @@ import tl = require('azure-pipelines-task-lib/task');
 import shell = require("shelljs");
 import path = require("path");
 import fs = require('fs');
-import { HttpHelper } from './HttpHelper';
-const helper = new HttpHelper();
+import { nexusV3 } from './nexusV3';
+const nexus = new nexusV3();
 
 async function run() {
     console.log(`Downloading artifact.`);
@@ -110,11 +110,11 @@ async function run() {
         console.log(`Search for asset using '${searchUri}'.`);
         // need to refactor this logic to reduce duplication of code
         if (searchUri.protocol === "https:") {
-            helper.execute_https(searchUri, username, password, acceptUntrustedCerts);
+            nexus.execute_https(searchUri, username, password, acceptUntrustedCerts);
         }
         else
         {
-            helper.execute_http(searchUri, username, password);
+            nexus.execute_http(searchUri, username, password);
         }
         console.log(`Completing search for asset using '${searchUri}'.`);
 

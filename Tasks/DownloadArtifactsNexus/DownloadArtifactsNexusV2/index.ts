@@ -2,8 +2,8 @@ import tl = require('azure-pipelines-task-lib/task');
 import shell = require("shelljs");
 import path = require("path");
 import fs = require('fs');
-import { HttpHelper } from './HttpHelper';
-const helper = new HttpHelper();
+import { nexusV2 } from './nexusV2';
+const nexus = new nexusV2();
 
 async function run() {
     console.log(`Downloading artifact.`);
@@ -85,6 +85,7 @@ async function run() {
         }
 
         tl.debug(`HostUri set to '${hostUri}'`);
+        // https://support.sonatype.com/hc/en-us/articles/213465488
         // https://repository.sonatype.org/nexus-restlet1x-plugin/default/docs/path__artifact_maven_redirect.html
         let requestPath : string = `/service/local/artifact/maven/redirect?r=${repository}&g=${group}&a=${artifact}&v=${baseVersion}&p=${packaging}`;
 
@@ -114,11 +115,11 @@ async function run() {
         console.log(`Search for asset using '${searchUri}'.`);
         // need to refactor this logic to reduce duplication of code
         if (searchUri.protocol === "https:")  {
-            helper.execute_https(searchUri, username, password, acceptUntrustedCerts);
+            nexus.execute_https(searchUri, username, password, acceptUntrustedCerts);
         }
         else
         {
-            helper.execute_http(searchUri, username, password);
+            nexus.execute_http(searchUri, username, password);
         }
         console.log(`Completing search for asset using '${searchUri}'.`);
 
