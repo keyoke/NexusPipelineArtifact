@@ -16,7 +16,7 @@ export class nexusV3 {
 
         let options : http.RequestOptions = {
             host: searchUri.hostname,
-            path: searchUri.pathname,
+            path: `${searchUri.pathname}?${searchUri.searchParams}`,
             method: 'GET',
             headers: {
                 'Authorization': 'Basic ' + authBase64,
@@ -43,7 +43,7 @@ export class nexusV3 {
 
         let options : https.RequestOptions = {
             host: searchUri.hostname,
-            path: searchUri.pathname,
+            path: `${searchUri.pathname}?${searchUri.searchParams}`,
             method: 'GET',
             rejectUnauthorized: !acceptUntrustedCerts, // By default ensure we validate SSL certificates
             headers: {
