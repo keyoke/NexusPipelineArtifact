@@ -104,8 +104,14 @@ async function run() {
             console.log('Classifier has not been supplied.');
         }
 
+        // Handle root path
+        if(hostUri.pathname !== "/")
+        {
+            requestPath = path.join(hostUri.pathname, requestPath);
+        }
+
         // Build the final search uri
-        const searchUri : URL = new URL(path.join(hostUri.pathname, requestPath), hostUri);
+        const searchUri : URL = new URL(requestPath, hostUri);
 
         console.log(`Search for asset using '${searchUri}'.`);
         try {
