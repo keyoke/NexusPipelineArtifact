@@ -78,7 +78,7 @@ export class nexusV3 {
                     options.path = downloadUri.pathname;
                     options.port = downloadUri.port || options.defaultPort;
     
-                    tl.debug(`Download asset using '${downloadUri}'.`);
+                    console.log(`Download asset using '${downloadUri}'.`);
                     let filename : string = path.basename(downloadUri.pathname);
                     console.log(`Download filename '${filename}'`);
     
@@ -100,23 +100,23 @@ export class nexusV3 {
                         } else
                         {
                             console.log(`Asset download was not successful!`);
-                            reject();
+                            reject(`Asset download was not successful!`);
                         }
                     });
                     inner_req.end();
                 }else
                 {
                     tl.debug(`Asset search was not successful!`);
+                    let message : string = `Asset search was not successful!`;
                     if (res.statusCode == 400) {
-                        console.log(`Search returned multiple assets, please refine search criteria to find a single asset!`)
+                        message = `Search returned multiple assets, please refine search criteria to find a single asset!`;
                     } else if (res.statusCode == 401) {
-                        console.log(`Invalid Nexus Repo Manager credentials!`)
+                        message = `Invalid Nexus Repo Manager credentials!`;
                     }  else if (res.statusCode == 404) {
-                        console.log(`Asset does not exist for search, or invalid Nexus Repo Manager Url!`)
-                    } else {
-                        console.log(`Asset search was not successful!`)
+                        message = `Asset does not exist for search, or invalid Nexus Repo Manager Url!`;
                     }
-                    reject();
+                    console.log(message);
+                    reject(message);
                 }
             });    
             req.end();              

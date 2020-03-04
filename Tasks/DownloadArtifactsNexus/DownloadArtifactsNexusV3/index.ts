@@ -108,15 +108,20 @@ async function run() {
         const searchUri : URL = new URL(path.join(hostUri.pathname, requestPath), hostUri);
 
         console.log(`Search for asset using '${searchUri}'.`);
-        // need to refactor this logic to reduce duplication of code
-        if (searchUri.protocol === "https:") {
-            await nexus.execute_https(searchUri, username, password, acceptUntrustedCerts);
+        try {
+            // need to refactor this logic to reduce duplication of code
+            if (searchUri.protocol === "https:") {
+                await nexus.execute_https(searchUri, username, password, acceptUntrustedCerts);
+            }
+            else
+            {
+                await nexus.execute_http(searchUri, username, password);
+            }
+            console.log(`Completed search for asset using '${searchUri}'.`);
+        } catch (inner_err) {
+            console.log(`Could not complete search for asset using '${searchUri}'.`);
+            throw inner_err;
         }
-        else
-        {
-            await nexus.execute_http(searchUri, username, password);
-        }
-        console.log(`Completed search for asset using '${searchUri}'.`);
 
     }
     catch (err) {
