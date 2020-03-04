@@ -110,13 +110,13 @@ async function run() {
         console.log(`Search for asset using '${searchUri}'.`);
         // need to refactor this logic to reduce duplication of code
         if (searchUri.protocol === "https:") {
-            nexus.execute_https(searchUri, username, password, acceptUntrustedCerts);
+            await nexus.execute_https(searchUri, username, password, acceptUntrustedCerts);
         }
         else
         {
-            nexus.execute_http(searchUri, username, password);
+            await nexus.execute_http(searchUri, username, password);
         }
-        console.log(`Completing search for asset using '${searchUri}'.`);
+        console.log(`Completed search for asset using '${searchUri}'.`);
 
     }
     catch (err) {
