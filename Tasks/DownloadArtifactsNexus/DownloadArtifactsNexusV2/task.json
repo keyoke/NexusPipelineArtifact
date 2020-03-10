@@ -17,13 +17,16 @@
     "version": {
         "Major": 2,
         "Minor": 0,
-        "Patch": 22
+        "Patch": 23
     },
     "minimumAgentVersion": "1.99.0",
     "instanceNameFormat": "Download Artifacts - Nexus (Maven Repository)",
     "inputs": [
             {
             "name": "connection",
+            "aliases": [
+              "NexusConnection"
+            ],
             "type": "connectedService:nexus",
             "label": "Nexus service connection",
             "defaultValue": "",
@@ -32,6 +35,9 @@
           },
           {
             "name": "repository",
+            "aliases": [
+              "RepositoryId"
+            ],
             "type": "string",
             "label": "Repository Id",
             "defaultValue": "",
@@ -43,6 +49,9 @@
             },
             {
             "name": "group",
+            "aliases": [
+              "GroupId"
+            ],
             "type": "string",
             "label": "Group Id",
             "defaultValue": "",
@@ -54,6 +63,9 @@
           },
           {
             "name": "artifact",
+            "aliases": [
+              "ArtifactId"
+            ],
             "type": "string",
             "label": "Artifact Id",
             "defaultValue": "",
@@ -65,6 +77,9 @@
           },
           {
             "name": "baseVersion",
+            "aliases": [
+              "BaseVersion"
+            ],
             "type": "string",
             "label": "Base Version",
             "defaultValue": "",
@@ -76,6 +91,9 @@
           },
           {
             "name": "packaging",
+            "aliases": [
+              "Packaging"
+            ],
             "label": "Packaging",
             "type": "string",
             "defaultValue": "",
@@ -87,6 +105,9 @@
           },
           {
             "name": "classifier",
+            "aliases": [
+              "Classifier"
+            ],
             "type": "string",
             "label": "Classifier",
             "defaultValue": "",
@@ -95,6 +116,9 @@
           },
           {
             "name": "extension",
+            "aliases": [
+              "Extension"
+            ],
             "type": "string",
             "label": "Extension",
             "defaultValue": "",
@@ -103,6 +127,9 @@
           },
           {
             "name": "downloadPath",
+            "aliases": [
+              "DownloadPath"
+            ],
             "type": "string",
             "label": "Download Path",
             "defaultValue": "$(System.ArtifactsDirectory)",
