@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.63",
+  "version": "1.0.64",
   "name": "Sonatype Nexus Release Artifact",
   "description": "Add support for Sonatype Nexus as an artifact for Release Pipelines",
   "public": true,
@@ -129,15 +129,15 @@
           }
       },
       {
-        "id": "nexus-custom-release-artifact-type-v3",
-        "description": "Sonatype Nexus Artifact V3",
+        "id": "nexus-custom-release-artifact-type",
+        "description": "Sonatype Nexus Artifact (Maven Repository)",
         "type": "ms.vss-releaseartifact.release-artifact-type",
         "targets": [
           "ms.vss-releaseartifact.artifact-types"
         ],
         "properties": {
-          "name": "NexusMavenRepositoryV3",
-          "displayName": "Nexus Maven Repository V3",
+          "name": "NexusMavenRepository",
+          "displayName": "Nexus Maven Repository",
           "endpointTypeId": "nexus",
           "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
           "downloadTaskId": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
@@ -160,9 +160,12 @@
               "id": "definition",
               "name": "Repository Id",
               "description": "Name of the Nexus repository in which to look for the component.",
-              "inputMode": "textbox",
+              "inputMode": "Combo",
               "isConfidential": false,
-              "hasDynamicValueInformation": false,
+              "hasDynamicValueInformation": true,
+              "dependencyInputIds": [
+                "connection"
+              ],
               "validation": {
                 "isRequired": true,
                 "dataType": "string",
@@ -173,9 +176,13 @@
               "id": "group",
               "name": "Group Id",
               "description": "The Maven groupId for a component.",
-              "inputMode": "textbox",
+              "inputMode": "Combo",
               "isConfidential": false,
-              "hasDynamicValueInformation": false,
+              "hasDynamicValueInformation": true,
+              "dependencyInputIds": [
+                "connection",
+                "definition"
+              ],
               "validation": {
                 "isRequired": true,
                 "dataType": "string",
@@ -186,9 +193,14 @@
               "id": "artifact",
               "name": "Artifact Id",
               "description": "The Maven artifactId for a component.",
-              "inputMode": "textbox",
+              "inputMode": "Combo",
               "isConfidential": false,
-              "hasDynamicValueInformation": false,
+              "hasDynamicValueInformation": true,
+              "dependencyInputIds": [
+                "connection",
+                "definition",
+                "group"
+              ],
               "validation": {
                 "isRequired": true,
                 "dataType": "string",
@@ -199,9 +211,15 @@
               "id": "baseVersion",
               "name": "Base Version",
               "description": "The base version of the component/asset.",
-              "inputMode": "textbox",
+              "inputMode": "combo",
               "isConfidential": false,
               "hasDynamicValueInformation": false,
+              "dependencyInputIds": [
+                "connection",
+                "definition",
+                "group",
+                "artifact"
+              ],
               "validation": {
                 "isRequired": true,
                 "dataType": "string",
@@ -250,7 +268,7 @@
           ],
           "taskInputMapping": {
             "connection": "{{{connection}}}",
-            "repository": "{{{repository}}}",
+            "repository": "{{{definition}}}",
             "group": "{{{group}}}",
             "artifact": "{{{artifact}}}",
             "baseVersion": "{{{baseVersion}}}",
@@ -262,26 +280,32 @@
             {
               "target": "definition",
               "endpointUrl":"{{endpoint.url}}service/rest/v1/repositories",
+              "resultSelector":"jsonpath:$.[?(@.format=='maven2')]",
+              "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+            },
+            {
+              "target": "group",
+              "endpointUrl":"{{endpoint.url}}service/rest/v1/search?repository={{{definition}}}",
+              "resultSelector":"jsonpath:$.[*].group",
+              "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }"
+            },
+            {
+              "target": "artifact",
+              "endpointUrl":"{{endpoint.url}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{group}}",
               "resultSelector":"jsonpath:$.[*]",
-              "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+              "resultTemplate": "{ Value : \"{{{id}}}\", DisplayValue : \"{{{name}}}\" }"
             },
             {
-              "target": "components",
-              "endpointUrl":"{{endpoint.url}}/service/rest/v1/components?repository={{{definition}}}",
+              "target": "baseVersion",
+              "endpointUrl":"{{endpoint.url}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{group}}&maven.artifactId={{artifact}}&sort=version",
               "resultSelector":"jsonpath:$.[*]",
-              "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+              "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
             },
             {
-              "target": "versions",
-              "endpointUrl":"{{endpoint.url}}service/rest/v1/assets?repository={{{definition}}}",
-               "resultSelector":"jsonpath:$.[*]",
-              "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
-            },
-            {
-              "target": "latestversion",
-              "endpointUrl":"{{endpoint.url}}service/rest/v1/assets?repository={{{definition}}}",
+              "name": "latestversion",
+              "endpointUrl":"{{endpoint.url}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{group}}&maven.artifactId={{artifact}}&sort=version",
               "resultSelector":"jsonpath:$.[0]",
-              "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+              "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
             }
           ],
           "ArtifactTriggerConfiguration" : {
