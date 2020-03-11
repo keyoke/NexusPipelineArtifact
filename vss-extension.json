@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.74",
+  "version": "1.0.75",
   "name": "Sonatype Nexus Release Artifact",
   "description": "Add support for Sonatype Nexus as an artifact for Release Pipelines",
   "public": true,
@@ -39,8 +39,43 @@
     "default": "icon-nexus-logo.png"
   },
   "screenshots": [
+    {
+      "path": "images/screen1.png"
+    },
+    {
+      "path": "images/screen2.png"
+    },
+    {
+      "path": "images/screen3.png"
+    },
+    {
+      "path": "images/screen4.png"
+    },
+    {
+      "path": "images/screen5.png"
+    }
   ],
   "files": [
+    {
+      "path": "images/screen1.png",
+      "addressable": true
+    },
+    {
+        "path": "images/screen2.png",
+        "addressable": true
+    },
+    {
+        "path": "images/screen3.png",
+        "addressable": true
+    },
+    {
+        "path": "images/screen4.png",
+        "addressable": true
+    },
+    {
+        "path": "images/screen5.png",
+        "addressable": true
+    },
     {
       "path": "icon-nexus-logo.png",
       "addressable": true
@@ -52,14 +87,14 @@
   "contributions": [
       {
         "id": "nexus-endpoint-type",
-        "description": "Service connection type for Sonatype Nexus",
+        "description": "Service connection type for Sonatype Nexus Repository Manager",
         "type": "ms.vss-endpoint.service-endpoint-type",
         "targets": [
           "ms.vss-endpoint.endpoint-types"
         ],
         "properties": {
           "name": "nexus",
-          "displayName": "Sonatype Nexus",
+          "displayName": "Sonatype Nexus Repository Manager",
           "url": {
             "displayName": "Repository URL"
           },
@@ -137,7 +172,7 @@
         ],
         "properties": {
           "name": "NexusMavenRepository",
-          "displayName": "Maven Repository",
+          "displayName": "Maven Repository (NXRM v3)",
           "endpointTypeId": "nexus",
           "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
           "downloadTaskId": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
@@ -224,7 +259,7 @@
                   },
                   {
                     "value": "specificVersionType",
-                    "displayValue": "Specific base version"
+                    "displayValue": "Specific version"
                   },
                   {
                     "value": "selectDuringReleaseCreationType",
