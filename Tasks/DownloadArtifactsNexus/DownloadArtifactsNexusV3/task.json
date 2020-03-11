@@ -17,7 +17,7 @@
     "version": {
         "Major": 3,
         "Minor": 0,
-        "Patch": 21
+        "Patch": 23
     },
     "minimumAgentVersion": "1.99.0",
     "instanceNameFormat": "Download Artifacts - Nexus (Maven Repository)",
@@ -38,7 +38,7 @@
             "aliases": [
               "RepositoryId"
             ],
-            "type": "string",
+            "type": "pickList",
             "label": "Repository Id",
             "defaultValue": "",
             "required": true,
@@ -52,7 +52,7 @@
             "aliases": [
               "GroupId"
             ],
-            "type": "string",
+            "type": "pickList",
             "label": "Group Id",
             "defaultValue": "",
             "required": true,
@@ -66,7 +66,7 @@
             "aliases": [
               "ArtifactId"
             ],
-            "type": "string",
+            "type": "pickList",
             "label": "Artifact Id",
             "defaultValue": "",
             "required": true,
@@ -80,7 +80,7 @@
             "aliases": [
               "BaseVersion"
             ],
-            "type": "string",
+            "type": "pickList",
             "label": "Base Version",
             "defaultValue": "",
             "required": true,
@@ -138,7 +138,46 @@
           }
     ],
     "dataSourceBindings": [
-     
+      {
+        "target": "repository",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{endpoint.url}}service/rest/v1/repositories",
+        "resultSelector":"jsonpath:$.[?(@.format=='maven2')]",
+        "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+      },
+      {
+        "target": "group",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{endpoint.url}}service/rest/v1/search?repository={{{repository}}}",
+        "parameters":{
+          "repository": "$(repository)"
+        },
+        "resultSelector":"jsonpath:$.items[*].group",
+        "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }"
+      },
+      {
+        "target": "artifact",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{endpoint.url}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{group}}",
+        "parameters":{
+          "repository": "$(repository)",
+          "group":"$(group)"
+        },
+        "resultSelector":"jsonpath:$.items[*].name",
+        "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }"
+      },
+      {
+        "target": "baseVersion",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{endpoint.url}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{group}}&maven.artifactId={{artifact}}&sort=version",
+        "parameters":{
+          "repository": "$(repository)",
+          "group":"$(group)",
+          "artifact":"$(artifact)"
+        },
+        "resultSelector":"jsonpath:$.items[*]",
+        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+      }
     ],
     "execution": {
         "Node10": {
