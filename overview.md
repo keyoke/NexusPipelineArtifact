@@ -1,10 +1,10 @@
 # Sonatype Nexus Repository artifact for Release Pipelines
-This extension provides support for Nexus Repositories (Maven) when leveraging Release Pipelines, the initial version includes Release Pipeline Artifact support for Maven Repositories v3 as well as providing Azure Pipelines tasks for downloading assets from both V2 & V3 Maven Repositories.
+This extension provides support for Nexus Maven Repositories when leveraging Release Pipelines, the initial version includes Release Pipeline Artifact support for Nexus Maven Repositories v3 as well as providing Azure Pipelines tasks for downloading assets from both V2 & V3 Nexus Maven Repositories.
 
 ## Usage
 This extension requires you to first configure a service connection to connect to your Nexus Repository server. Once connected, you can link a source artifact from the a Nexus Maven Repository v3 and use these artifacts in your Release Pipeline.
 
-### Connecting to Nexus Maven Repository
+### Connecting to Nexus Repository
 Go to project settings -> Services Connections tab and create a New Service Connection of type Sonatype Nexus Repository.
 
 ![Creating a Sonatype Nexus Repository connection](images/screen5.png)
@@ -12,7 +12,7 @@ Go to project settings -> Services Connections tab and create a New Service Conn
 The authentication scenarios which are currently supported by the extension are :
 * Username & Password
 
-If your Nexus Repository server is deployed in a private cloud which is behind a firewall and the Azure DevOps Service does not have line of sight to the server - the Artifact fields will not be dyanmically populated and you will have to manually provide these values.
+If your Nexus Repository server is deployed in a private cloud which is behind a firewall and the Azure DevOps Service does not have line of sight to the server - the Artifact fields will not be dynamically populated at design time and you will have to manually provide these values.
 
 ### Linking a Nexus Maven Repository v3 artifact
 Once you have set up the service connection, you will be able to link to a Nexus Maven Repository v3 artifact in your release definition.
