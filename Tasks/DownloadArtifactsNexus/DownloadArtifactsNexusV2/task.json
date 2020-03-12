@@ -12,12 +12,12 @@
       "Agent",
       "MachineGroup"
     ],
-    "preview": true,
+    "preview": false,
     "author": "soft-cor",
     "version": {
         "Major": 2,
         "Minor": 0,
-        "Patch": 24
+        "Patch": 25
     },
     "minimumAgentVersion": "1.99.0",
     "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v2",
