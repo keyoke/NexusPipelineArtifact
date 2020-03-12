@@ -2,8 +2,8 @@
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
     "id": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
     "name": "DownloadArtifactsNexusMavenRepository",
-    "friendlyName": "Download Artifacts - Nexus (Maven Repository)",
-    "description": "Download Nexus Maven Artifact",
+    "friendlyName": "Download Artifacts - Nexus Maven Repository v2",
+    "description": "Download Nexus Maven Repository v2 Artifact",
     "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
     "category": "Deploy",
     "visibility": ["Release"],
@@ -17,10 +17,10 @@
     "version": {
         "Major": 2,
         "Minor": 0,
-        "Patch": 23
+        "Patch": 24
     },
     "minimumAgentVersion": "1.99.0",
-    "instanceNameFormat": "Download Artifacts - Nexus (Maven Repository)",
+    "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v2",
     "inputs": [
             {
             "name": "connection",
@@ -31,7 +31,7 @@
             "label": "Nexus service connection",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "Nexus service connection"
+            "helpMarkDown": "Nexus Repository service connection"
           },
           {
             "name": "repository",
@@ -45,7 +45,7 @@
             "properties": {
               "EditableOptions": "True"
             },
-            "helpMarkDown": "Name of the Nexus repository in which to look for the component."
+            "helpMarkDown": "Name of the Nexus Repository in which to look for the component."
             },
             {
             "name": "group",

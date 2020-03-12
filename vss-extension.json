@@ -2,12 +2,12 @@
   "manifestVersion": 1,
   "id": "nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.75",
-  "name": "Sonatype Nexus Release Artifact",
-  "description": "Add support for Sonatype Nexus as an artifact for Release Pipelines",
+  "version": "1.0.76",
+  "name": "Sonatype Nexus Repository Release Artifact",
+  "description": "Add support for Sonatype Nexus Repository as an artifact for Release Pipelines",
   "public": true,
   "galleryFlags": [
-    "Preview"
+
   ],
   "categories": [ "Azure Pipelines" ],
   "content": {
@@ -25,6 +25,8 @@
   "tags": [
     "Sonatype",
     "Nexus",
+    "repository",
+    "manager",
     "continuous",
     "release",
     "deploy",
@@ -87,14 +89,14 @@
   "contributions": [
       {
         "id": "nexus-endpoint-type",
-        "description": "Service connection type for Sonatype Nexus Repository Manager",
+        "description": "Service connection type for Sonatype Nexus Repository",
         "type": "ms.vss-endpoint.service-endpoint-type",
         "targets": [
           "ms.vss-endpoint.endpoint-types"
         ],
         "properties": {
           "name": "nexus",
-          "displayName": "Sonatype Nexus Repository Manager",
+          "displayName": "Sonatype Nexus Repository",
           "url": {
             "displayName": "Repository URL"
           },
@@ -165,14 +167,14 @@
       },
       {
         "id": "nexus-custom-release-artifact-type",
-        "description": "Sonatype Nexus Artifact (Maven Repository)",
+        "description": "Sonatype Nexus Repository Artifact (Maven)",
         "type": "ms.vss-releaseartifact.release-artifact-type",
         "targets": [
           "ms.vss-releaseartifact.artifact-types"
         ],
         "properties": {
           "name": "NexusMavenRepository",
-          "displayName": "Maven Repository (NXRM v3)",
+          "displayName": "Maven Repository v3",
           "endpointTypeId": "nexus",
           "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
           "downloadTaskId": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
