@@ -173,7 +173,7 @@
           "ms.vss-releaseartifact.artifact-types"
         ],
         "properties": {
-          "name": "NexusMavenRepository",
+          "name": "nexus-maven-repository",
           "displayName": "Maven Repository v2",
           "endpointTypeId": "nexus",
           "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
@@ -300,9 +300,63 @@
               "id": "packaging",
               "name": "Packaging",
               "description": "The Maven packaging for a component, which is jar by default. Other values as used in Maven and other build tools are ear, war, maven-plugin, pom, ejb, zip, tar.gz, aar and many others.",
-              "inputMode": "textbox",
+              "inputMode": "Combo",
               "isConfidential": false,
               "hasDynamicValueInformation": false,
+              "values": {
+                "defaultValue": "",
+                "possibleValues": [
+                  {
+                    "value": "pom",
+                    "displayValue": "pom"
+                  },
+                  {
+                    "value": "jar",
+                    "displayValue": "jar"
+                  },
+                  {
+                    "value": "ejb",
+                    "displayValue": "ejb"
+                  },
+                  {
+                    "value": "war",
+                    "displayValue": "war"
+                  },
+                  {
+                    "value": "ear",
+                    "displayValue": "ear"
+                  },
+                  {
+                    "value": "aar",
+                    "displayValue": "aar"
+                  },
+                  {
+                    "value": "tar.gz",
+                    "displayValue": "tar.gz"
+                  },
+                  {
+                    "value": "rar",
+                    "displayValue": "rar"
+                  },
+                  {
+                    "value": "zip",
+                    "displayValue": "zip"
+                  },
+                  {
+                    "value": "par",
+                    "displayValue": "par"
+                  },
+                  {
+                    "value": "maven-archetype",
+                    "displayValue": "maven-archetype"
+                  },
+                  {
+                    "value": "maven-plugin",
+                    "displayValue": "maven-plugin"
+                  }
+                ],
+                "isLimitedToPossibleValues": false
+              },
               "validation": {
                 "isRequired": true,
                 "dataType": "string",
@@ -390,7 +444,7 @@
         }
       },
       {
-        "id": "nexus-build-release-task-3",
+        "id": "nexus-build-release-task-v3",
         "type": "ms.vss-distributed-task.task",
         "targets": [
             "ms.vss-distributed-task.tasks"
@@ -400,18 +454,18 @@
         }
     },
     {
-      "id": "nexus-custom-release-artifact-type-3",
+      "id": "nexus-custom-release-artifact-type-v3",
       "description": "Sonatype Nexus Repository v3 Artifact (Maven)",
       "type": "ms.vss-releaseartifact.release-artifact-type",
       "targets": [
         "ms.vss-releaseartifact.artifact-types"
       ],
       "properties": {
-        "name": "NexusMavenRepository3",
+        "name": "nexus-maven-repository-v3",
         "displayName": "Maven Repository v3",
         "endpointTypeId": "nexus",
         "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
-        "downloadTaskId": "1f9e06bd-db88-478b-8212-78b5f17533c9",
+        "downloadTaskId": "6a26339d-ca44-4f1c-8511-fde5b7550a68",
         "artifactType": "Build",
         "inputDescriptors": [
           {
@@ -537,6 +591,60 @@
             "inputMode": "textbox",
             "isConfidential": false,
             "hasDynamicValueInformation": false,
+            "values": {
+              "defaultValue": "",
+              "possibleValues": [
+                {
+                  "value": "pom",
+                  "displayValue": "pom"
+                },
+                {
+                  "value": "jar",
+                  "displayValue": "jar"
+                },
+                {
+                  "value": "ejb",
+                  "displayValue": "ejb"
+                },
+                {
+                  "value": "war",
+                  "displayValue": "war"
+                },
+                {
+                  "value": "ear",
+                  "displayValue": "ear"
+                },
+                {
+                  "value": "aar",
+                  "displayValue": "aar"
+                },
+                {
+                  "value": "tar.gz",
+                  "displayValue": "tar.gz"
+                },
+                {
+                  "value": "rar",
+                  "displayValue": "rar"
+                },
+                {
+                  "value": "zip",
+                  "displayValue": "zip"
+                },
+                {
+                  "value": "par",
+                  "displayValue": "par"
+                },
+                {
+                  "value": "maven-archetype",
+                  "displayValue": "maven-archetype"
+                },
+                {
+                  "value": "maven-plugin",
+                  "displayValue": "maven-plugin"
+                }
+              ],
+              "isLimitedToPossibleValues": false
+            },
             "validation": {
               "isRequired": true,
               "dataType": "string",

@@ -1,7 +1,7 @@
 {
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-    "id": "1f9e06bd-db88-478b-8212-78b5f17533c9",
-    "name": "DownloadArtifactsNexusMavenRepository3",
+    "id": "6a26339d-ca44-4f1c-8511-fde5b7550a68",
+    "name": "DownloadArtifactsNexusMavenRepositoryV3",
     "friendlyName": "Download Artifacts - Nexus Maven Repository v3",
     "description": "Download Nexus Maven Repository v3 Artifact",
     "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension-3)",
