@@ -4,7 +4,7 @@ import fs = require('fs');
 import http = require('http');
 import https = require('https');
 
-export class nexusV2 {
+export class httpHelper {
     public async execute_http(searchUri : URL, username : string, password : string) : Promise<void>
     {
         tl.debug(`execute_http.`);

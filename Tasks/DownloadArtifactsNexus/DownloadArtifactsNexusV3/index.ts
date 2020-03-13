@@ -2,8 +2,8 @@ import tl = require('azure-pipelines-task-lib/task');
 import shell = require("shelljs");
 import path = require("path");
 import fs = require('fs');
-import { nexusV3 } from './nexusV3';
-const nexus = new nexusV3();
+import { httpHelper } from './httpHelper';
+const nexus = new httpHelper();
 
 async function run() {
     console.log(`Downloading artifact.`);
