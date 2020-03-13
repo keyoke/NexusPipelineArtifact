@@ -1,10 +1,10 @@
 {
   "manifestVersion": 1,
-  "id": "nexus-custom-release-artifact-extension",
+  "id": "nexus-custom-release-artifact-extension-3",
   "publisher": "soft-cor",
-  "version": "1.0.80",
-  "name": "Sonatype Nexus Repository Release Artifact",
-  "description": "Add support for Sonatype Nexus Repository as an artifact for Release Pipelines",
+  "version": "1.0.82",
+  "name": "Sonatype Nexus Repository v3 Release Artifact",
+  "description": "Add support for Sonatype Nexus Repository v3 as an artifact for Release Pipelines",
   "public": true,
   "galleryFlags": [
 
@@ -37,6 +37,7 @@
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
+  "demands": [ "contribution/ms.vss-endpoint.nexus-endpoint-type" ],
   "icons": {
     "default": "icon-nexus-logo.png"
   },
@@ -83,101 +84,33 @@
       "addressable": true
     },
     {
-      "path": "dist/Tasks/DownloadArtifactsNexus"
+      "path": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV3"
     }
   ],
   "contributions": [
       {
-        "id": "nexus-endpoint-type",
-        "description": "Service connection type for Sonatype Nexus Repository",
-        "type": "ms.vss-endpoint.service-endpoint-type",
-        "targets": [
-          "ms.vss-endpoint.endpoint-types"
-        ],
-        "properties": {
-          "name": "nexus",
-          "displayName": "Sonatype Nexus Repository",
-          "url": {
-            "displayName": "Repository URL"
-          },
-          "authenticationSchemes": [
-            {
-              "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
-              "inputDescriptors": [
-                {
-                  "id": "username",
-                  "name": "Username",
-                  "description": "Username for connecting to the endpoint",
-                  "inputMode": "textbox",
-                  "isConfidential": false,
-                  "validation": {
-                    "isRequired": true,
-                    "dataType": "string"
-                  }
-                },
-                {
-                  "id": "password",
-                  "name": "Password",
-                  "description": "Password for connecting to the endpoint",
-                  "inputMode": "passwordBox",
-                  "isConfidential": true,
-                  "validation": {
-                    "isRequired": true,
-                    "dataType": "string"
-                  }
-                }
-              ]
-            }
-          ],        
-          "inputDescriptors": [
-            {
-              "id": "acceptUntrustedCerts",
-              "name": "Accept untrusted SSL certificates",
-              "description": "Allows self-signed SSL certificates.",
-              "inputMode": "checkbox",
-              "isConfidential": false,
-              "validation": {
-                "isRequired": false,
-                "dataType": "boolean"
-              }
-            }
-          ],
-          "dataSources": [
-            
-          ]
-        },
-        "constraints": [
-          {
-            "name": "Feature",
-            "properties": {
-              "featureId": "ms.vss-distributedtask-web.new-serviceconnections-ui"
-            }
-          }
-        ]
-      },
-      {
-          "id": "nexus-build-release-task",
+          "id": "nexus-build-release-task-3",
           "type": "ms.vss-distributed-task.task",
           "targets": [
               "ms.vss-distributed-task.tasks"
           ],
           "properties": {
-              "name": "dist/Tasks/DownloadArtifactsNexus"
+              "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV3"
           }
       },
       {
-        "id": "nexus-custom-release-artifact-type",
-        "description": "Sonatype Nexus Repository Artifact (Maven)",
+        "id": "nexus-custom-release-artifact-type-3",
+        "description": "Sonatype Nexus Repository v3 Artifact (Maven)",
         "type": "ms.vss-releaseartifact.release-artifact-type",
         "targets": [
           "ms.vss-releaseartifact.artifact-types"
         ],
         "properties": {
-          "name": "NexusMavenRepository",
+          "name": "NexusMavenRepository3",
           "displayName": "Maven Repository v3",
           "endpointTypeId": "nexus",
           "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
-          "downloadTaskId": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
+          "downloadTaskId": "1f9e06bd-db88-478b-8212-78b5f17533c9",
           "artifactType": "Build",
           "inputDescriptors": [
             {
