@@ -87,12 +87,27 @@ async function run() {
         tl.debug(`HostUri set to '${hostUri}'`);
         // https://support.sonatype.com/hc/en-us/articles/213465488
         // https://repository.sonatype.org/nexus-restlet1x-plugin/default/docs/path__artifact_maven_redirect.html
-        let requestPath : string = `/service/local/artifact/maven/redirect?r=${repository}&g=${group}&a=${artifact}&v=${baseVersion}&p=${packaging}`;
+        // Build the final search uri
+        let requestPath : string = `/service/local/artifact/maven/redirect`;
+
+        // Handle root path
+        if(hostUri.pathname !== "/")
+        {
+            requestPath = path.join(hostUri.pathname, requestPath);
+        }
+        hostUri.pathname = requestPath;
+
+        // Query Parameters
+        hostUri.searchParams.append("r", repository);
+        hostUri.searchParams.append("g", group);
+        hostUri.searchParams.append("a", artifact);
+        hostUri.searchParams.append("v", baseVersion);
+        hostUri.searchParams.append("p", packaging);
 
         // Do we have a extension
         if (extension) {
             console.log(`Using extension ${extension}.`);
-            requestPath = `${requestPath}&e=${extension}`
+            hostUri.searchParams.append("e", extension);
         }
         else
         {
@@ -102,21 +117,12 @@ async function run() {
         // Do we have a classifier
         if (classifier) {
             console.log(`Using classifier ${classifier}.`);
-            requestPath = `${requestPath}&c=${classifier}`
+            hostUri.searchParams.append("c", classifier);
         }
         else
         {
             console.log('Classifier has not been supplied.');
         }
-        
-        // Handle root path
-        if(hostUri.pathname !== "/")
-        {
-            requestPath = path.join(hostUri.pathname, requestPath);
-        }
-
-        // Build the final search uri
-        hostUri.pathname = requestPath;
 
         console.log(`Search for asset using '${hostUri}'.`);
         try {

@@ -92,26 +92,34 @@ async function run() {
 
         tl.debug(`HostUri set to '${hostUri}'`);
         // https://help.sonatype.com/repomanager3/rest-and-integration-api/search-api
-        let requestPath : string = `/service/rest/v1/search/assets/download?sort=version&repository=${repository}&maven.groupId=${group}&maven.artifactId=${artifact}&maven.baseVersion=${baseVersion}&maven.extension=${extension}&maven.classifier`;
+        // Build the final search uri
+        let requestPath : string = `/service/rest/v1/search/assets/download`;
+
+        // Handle root path
+        if(hostUri.pathname !== "/")
+        {
+            requestPath = path.join(hostUri.pathname, requestPath);
+        }
+        hostUri.pathname = requestPath;
+
+        // Query Parameters
+        hostUri.searchParams.append("sort", "version");
+        hostUri.searchParams.append("repository", repository);
+        hostUri.searchParams.append("maven.groupId", group);
+        hostUri.searchParams.append("maven.artifactId", artifact);
+        hostUri.searchParams.append("maven.baseVersion", baseVersion);
+        hostUri.searchParams.append("maven.extension", extension);
+        hostUri.searchParams.append("maven.classifier", "");
 
         // Do we have a classifier
         if (classifier) {
             console.log(`Using classifier ${classifier}.`);
-            requestPath = `${requestPath}=${classifier}`
+            hostUri.searchParams.set("maven.classifier",classifier);
         }
         else
         {
             console.log('Classifier has not been supplied.');
         }
-
-        // Handle root path
-        if(hostUri.pathname !== "/")
-        {
-             requestPath = path.join(hostUri.pathname, requestPath);
-        }
-
-        // Build the final search uri
-        hostUri.pathname = requestPath;
 
         console.log(`Search for asset using '${hostUri}'.`);
         try {
