@@ -2,8 +2,8 @@
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
     "id": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
     "name": "DownloadArtifactsNexusMavenRepository",
-    "friendlyName": "Download Artifacts - Nexus Maven Repository v2",
-    "description": "Download Nexus Maven Repository v2 Artifact",
+    "friendlyName": "Download Artifacts - Nexus Maven Repository",
+    "description": "Download Nexus Maven Repository Artifact",
     "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
     "category": "Deploy",
     "visibility": ["Release"],
@@ -17,10 +17,10 @@
     "version": {
         "Major": 2,
         "Minor": 0,
-        "Patch": 27
+        "Patch": 28
     },
     "minimumAgentVersion": "1.99.0",
-    "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v2",
+    "instanceNameFormat": "Download Artifacts - Nexus Maven Repository",
     "inputs": [
             {
             "name": "connection",
@@ -52,7 +52,7 @@
             "aliases": [
               "GroupId"
             ],
-            "type": "string",
+            "type": "pickList",
             "label": "Group Id",
             "defaultValue": "",
             "required": true,
@@ -66,7 +66,7 @@
             "aliases": [
               "ArtifactId"
             ],
-            "type": "string",
+            "type": "pickList",
             "label": "Artifact Id",
             "defaultValue": "",
             "required": true,
@@ -80,7 +80,7 @@
             "aliases": [
               "BaseVersion"
             ],
-            "type": "string",
+            "type": "pickList",
             "label": "Base Version",
             "defaultValue": "",
             "required": true,
@@ -94,8 +94,22 @@
             "aliases": [
               "Packaging"
             ],
+            "options": {
+              "pom": "pom",
+              "jar": "jar",
+              "ejb": "ejb",
+              "war": "war",
+              "ear": "ear",
+              "aar": "aar",
+              "tar.gz": "tar.gz",
+              "rar": "rar",
+              "zip": "zip",
+              "par": "par",
+              "maven-archetype": "maven-archetype",
+              "maven-plugin": "maven-plugin"
+            },
             "label": "Packaging",
-            "type": "string",
+            "type": "pickList",
             "defaultValue": "",
             "required": true,
             "properties": {
@@ -144,6 +158,39 @@
         "endpointUrl":"{{endpoint.url}}service/local/all_repositories",
         "resultSelector":"jsonpath:$.data[?(@.provider=='maven2')]",
         "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+      },
+      {
+        "target": "group",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{endpoint.url}}service/local/lucene/search?repositoryId={{{repository}}}&cn=maven",
+        "parameters":{
+          "repository": "$(repository)"
+        },
+        "resultSelector":"jsonpath:$.data[*].groupId",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
+      },
+      {
+        "target": "artifact",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{endpoint.url}}service/local/lucene/search?repositoryId={{{repository}}}&g={{group}}",
+        "parameters":{
+          "repository": "$(repository)",
+          "group":"$(group)"
+        },
+        "resultSelector":"jsonpath:$.data[*].artifactId",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
+      },
+      {
+        "target": "baseVersion",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{endpoint.url}}service/local/lucene/search?repositoryId={{{repository}}}&g={{group}}&a={{artifact}}",
+        "parameters":{
+          "repository": "$(repository)",
+          "group":"$(group)",
+          "artifact":"$(artifact)"
+        },
+        "resultSelector":"jsonpath:$.data[*].version",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
       }
     ],
     "execution": {

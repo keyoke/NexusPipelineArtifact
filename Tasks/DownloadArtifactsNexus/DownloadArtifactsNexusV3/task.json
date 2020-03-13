@@ -2,8 +2,8 @@
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
     "id": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
     "name": "DownloadArtifactsNexusMavenRepository",
-    "friendlyName": "Download Artifacts - Nexus Maven Repository v3",
-    "description": "Download Nexus Maven Repository v3 Artifact",
+    "friendlyName": "Download Artifacts - Nexus Maven Repository",
+    "description": "Download Nexus Maven Repository Artifact",
     "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
     "category": "Deploy",
     "visibility": ["Release"],
@@ -17,10 +17,10 @@
     "version": {
         "Major": 3,
         "Minor": 0,
-        "Patch": 25
+        "Patch": 26
     },
     "minimumAgentVersion": "1.99.0",
-    "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v3",
+    "instanceNameFormat": "Download Artifacts - Nexus Maven Repository",
     "inputs": [
             {
             "name": "connection",
@@ -94,8 +94,22 @@
             "aliases": [
               "Packaging"
             ],
+            "options": {
+              "pom": "pom",
+              "jar": "jar",
+              "ejb": "ejb",
+              "war": "war",
+              "ear": "ear",
+              "aar": "aar",
+              "tar.gz": "tar.gz",
+              "rar": "rar",
+              "zip": "zip",
+              "par": "par",
+              "maven-archetype": "maven-archetype",
+              "maven-plugin": "maven-plugin"
+            },
             "label": "Packaging",
-            "type": "string",
+            "type": "pickList",
             "defaultValue": "",
             "required": true,
             "properties": {
