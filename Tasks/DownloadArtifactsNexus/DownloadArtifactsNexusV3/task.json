@@ -4,7 +4,7 @@
     "name": "DownloadArtifactsNexusMavenRepositoryV3",
     "friendlyName": "Download Artifacts - Nexus Maven Repository v3",
     "description": "Download Nexus Maven Repository v3 Artifact",
-    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension-3)",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
     "category": "Deploy",
     "visibility": ["Release"],
     "demands": [],
@@ -17,7 +17,7 @@
     "version": {
         "Major": 3,
         "Minor": 0,
-        "Patch": 29
+        "Patch": 30
     },
     "minimumAgentVersion": "1.99.0",
     "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v3",

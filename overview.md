@@ -23,7 +23,4 @@ Once you have selected the Service Connection, you will be able to select the re
 
 ![Linking Nexus Maven Repository v3 artifact](images/screen3.png)
 
-## TODO
-The following functionality is pending.
 
-* Add support for Nexus Maven Repository v2 as a Release Artifact
