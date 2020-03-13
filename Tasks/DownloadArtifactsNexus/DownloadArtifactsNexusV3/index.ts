@@ -19,7 +19,7 @@ async function run() {
         }
         
         // Get the service connection details for communicating with Nexus
-        const hostUri : URL | undefined = new URL(tl.getEndpointUrl(connection, false));  
+        let hostUri : URL | undefined = new URL(tl.getEndpointUrl(connection, false));  
 
         if(!hostUri)
         {
@@ -92,40 +92,48 @@ async function run() {
 
         tl.debug(`HostUri set to '${hostUri}'`);
         // https://help.sonatype.com/repomanager3/rest-and-integration-api/search-api
-        let requestPath : string = `/service/rest/v1/search/assets/download?sort=version&repository=${repository}&maven.groupId=${group}&maven.artifactId=${artifact}&maven.baseVersion=${baseVersion}&maven.extension=${extension}&maven.classifier`;
-
-        // Do we have a classifier
-        if (classifier) {
-            console.log(`Using classifier ${classifier}.`);
-            requestPath = `${requestPath}=${classifier}`
-        }
-        else
-        {
-            console.log('Classifier has not been supplied.');
-        }
+        // Build the final search uri
+        let requestPath : string = `/service/rest/v1/search/assets/download`;
 
         // Handle root path
         if(hostUri.pathname !== "/")
         {
             requestPath = path.join(hostUri.pathname, requestPath);
         }
+        hostUri.pathname = requestPath;
 
-        // Build the final search uri
-        const searchUri : URL = new URL(requestPath, hostUri);
+        // Query Parameters
+        hostUri.searchParams.append("sort", "version");
+        hostUri.searchParams.append("repository", repository);
+        hostUri.searchParams.append("maven.groupId", group);
+        hostUri.searchParams.append("maven.artifactId", artifact);
+        hostUri.searchParams.append("maven.baseVersion", baseVersion);
+        hostUri.searchParams.append("maven.extension", extension);
+        hostUri.searchParams.append("maven.classifier", "");
 
-        console.log(`Search for asset using '${searchUri}'.`);
+        // Do we have a classifier
+        if (classifier) {
+            console.log(`Using classifier ${classifier}.`);
+            hostUri.searchParams.set("maven.classifier",classifier);
+        }
+        else
+        {
+            console.log('Classifier has not been supplied.');
+        }
+
+        console.log(`Search for asset using '${hostUri}'.`);
         try {
             // need to refactor this logic to reduce duplication of code
-            if (searchUri.protocol === "https:") {
-                await nexus.execute_https(searchUri, username, password, acceptUntrustedCerts);
+            if (hostUri.protocol === "https:") {
+                await nexus.execute_https(hostUri, username, password, acceptUntrustedCerts);
             }
             else
             {
-                await nexus.execute_http(searchUri, username, password);
+                await nexus.execute_http(hostUri, username, password);
             }
-            console.log(`Completed search for asset using '${searchUri}'.`);
+            console.log(`Completed search for asset using '${hostUri}'.`);
         } catch (inner_err) {
-            console.log(`Could not complete search for asset using '${searchUri}'.`);
+            console.log(`Could not complete search for asset using '${hostUri}'.`);
             throw inner_err;
         }
 

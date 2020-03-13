@@ -1,9 +1,9 @@
 {
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-    "id": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
-    "name": "DownloadArtifactsNexusMavenRepository",
-    "friendlyName": "Download Artifacts - Nexus Maven Repository",
-    "description": "Download Nexus Maven Repository Artifact",
+    "id": "6a26339d-ca44-4f1c-8511-fde5b7550a68",
+    "name": "DownloadArtifactsNexusMavenRepositoryV3",
+    "friendlyName": "Download Artifacts - Nexus Maven Repository v3",
+    "description": "Download Nexus Maven Repository v3 Artifact",
     "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
     "category": "Deploy",
     "visibility": ["Release"],
@@ -17,10 +17,10 @@
     "version": {
         "Major": 3,
         "Minor": 0,
-        "Patch": 26
+        "Patch": 34
     },
     "minimumAgentVersion": "1.99.0",
-    "instanceNameFormat": "Download Artifacts - Nexus Maven Repository",
+    "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v3",
     "inputs": [
             {
             "name": "connection",

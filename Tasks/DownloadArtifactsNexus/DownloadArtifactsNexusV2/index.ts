@@ -19,7 +19,7 @@ async function run() {
         }
         
         // Get the service connection details for communicating with Nexus
-        const hostUri : URL | undefined = new URL(tl.getEndpointUrl(connection, false));  
+        let hostUri : URL | undefined = new URL(tl.getEndpointUrl(connection, false));  
 
         if(!hostUri)
         {
@@ -87,12 +87,27 @@ async function run() {
         tl.debug(`HostUri set to '${hostUri}'`);
         // https://support.sonatype.com/hc/en-us/articles/213465488
         // https://repository.sonatype.org/nexus-restlet1x-plugin/default/docs/path__artifact_maven_redirect.html
-        let requestPath : string = `/service/local/artifact/maven/redirect?r=${repository}&g=${group}&a=${artifact}&v=${baseVersion}&p=${packaging}`;
+        // Build the final search uri
+        let requestPath : string = `/service/local/artifact/maven/redirect`;
+
+        // Handle root path
+        if(hostUri.pathname !== "/")
+        {
+            requestPath = path.join(hostUri.pathname, requestPath);
+        }
+        hostUri.pathname = requestPath;
+
+        // Query Parameters
+        hostUri.searchParams.append("r", repository);
+        hostUri.searchParams.append("g", group);
+        hostUri.searchParams.append("a", artifact);
+        hostUri.searchParams.append("v", baseVersion);
+        hostUri.searchParams.append("p", packaging);
 
         // Do we have a extension
         if (extension) {
             console.log(`Using extension ${extension}.`);
-            requestPath = `${requestPath}&e=${extension}`
+            hostUri.searchParams.append("e", extension);
         }
         else
         {
@@ -102,35 +117,26 @@ async function run() {
         // Do we have a classifier
         if (classifier) {
             console.log(`Using classifier ${classifier}.`);
-            requestPath = `${requestPath}&c=${classifier}`
+            hostUri.searchParams.append("c", classifier);
         }
         else
         {
             console.log('Classifier has not been supplied.');
         }
-        
-        // Handle root path
-        if(hostUri.pathname !== "/")
-        {
-            requestPath = path.join(hostUri.pathname, requestPath);
-        }
 
-        // Build the final search uri
-        const searchUri : URL = new URL(requestPath, hostUri);
-
-        console.log(`Search for asset using '${searchUri}'.`);
+        console.log(`Search for asset using '${hostUri}'.`);
         try {
             // need to refactor this logic to reduce duplication of code
-            if (searchUri.protocol === "https:") {
-                await nexus.execute_https(searchUri, username, password, acceptUntrustedCerts);
+            if (hostUri.protocol === "https:") {
+                await nexus.execute_https(hostUri, username, password, acceptUntrustedCerts);
             }
             else
             {
-                await nexus.execute_http(searchUri, username, password);
+                await nexus.execute_http(hostUri, username, password);
             }
-            console.log(`Completed search for asset using '${searchUri}'.`);
+            console.log(`Completed search for asset using '${hostUri}'.`);
         } catch (inner_err) {
-            console.log(`Could not complete search for asset using '${searchUri}'.`);
+            console.log(`Could not complete search for asset using '${hostUri}'.`);
             throw inner_err;
         }
     }
