@@ -17,7 +17,7 @@
     "version": {
         "Major": 2,
         "Minor": 0,
-        "Patch": 27
+        "Patch": 28
     },
     "minimumAgentVersion": "1.99.0",
     "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v2",
@@ -52,7 +52,7 @@
             "aliases": [
               "GroupId"
             ],
-            "type": "string",
+            "type": "pickList",
             "label": "Group Id",
             "defaultValue": "",
             "required": true,
@@ -66,7 +66,7 @@
             "aliases": [
               "ArtifactId"
             ],
-            "type": "string",
+            "type": "pickList",
             "label": "Artifact Id",
             "defaultValue": "",
             "required": true,
@@ -80,7 +80,7 @@
             "aliases": [
               "BaseVersion"
             ],
-            "type": "string",
+            "type": "pickList",
             "label": "Base Version",
             "defaultValue": "",
             "required": true,
@@ -144,6 +144,39 @@
         "endpointUrl":"{{endpoint.url}}service/local/all_repositories",
         "resultSelector":"jsonpath:$.data[?(@.provider=='maven2')]",
         "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+      },
+      {
+        "target": "group",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{endpoint.url}}service/local/lucene/search?repositoryId={{{repository}}}&cn=maven",
+        "parameters":{
+          "repository": "$(repository)"
+        },
+        "resultSelector":"jsonpath:$.data[*].groupId",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
+      },
+      {
+        "target": "artifact",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{endpoint.url}}service/local/lucene/search?repositoryId={{{repository}}}&g={{group}}",
+        "parameters":{
+          "repository": "$(repository)",
+          "group":"$(group)"
+        },
+        "resultSelector":"jsonpath:$.data[*].artifactId",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
+      },
+      {
+        "target": "baseVersion",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{endpoint.url}}service/local/lucene/search?repositoryId={{{repository}}}&g={{group}}&a={{artifact}}",
+        "parameters":{
+          "repository": "$(repository)",
+          "group":"$(group)",
+          "artifact":"$(artifact)"
+        },
+        "resultSelector":"jsonpath:$.data[*].version",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
       }
     ],
     "execution": {
