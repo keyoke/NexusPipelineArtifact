@@ -19,7 +19,7 @@ async function run() {
         }
         
         // Get the service connection details for communicating with Nexus
-        const hostUri : URL | undefined = new URL(tl.getEndpointUrl(connection, false));  
+        let hostUri : URL | undefined = new URL(tl.getEndpointUrl(connection, false));  
 
         if(!hostUri)
         {
@@ -107,25 +107,25 @@ async function run() {
         // Handle root path
         if(hostUri.pathname !== "/")
         {
-            requestPath = path.join(hostUri.pathname, requestPath);
+             requestPath = path.join(hostUri.pathname, requestPath);
         }
 
         // Build the final search uri
-        const searchUri : URL = new URL(requestPath, hostUri);
+        hostUri.pathname = requestPath;
 
-        console.log(`Search for asset using '${searchUri}'.`);
+        console.log(`Search for asset using '${hostUri}'.`);
         try {
             // need to refactor this logic to reduce duplication of code
-            if (searchUri.protocol === "https:") {
-                await nexus.execute_https(searchUri, username, password, acceptUntrustedCerts);
+            if (hostUri.protocol === "https:") {
+                await nexus.execute_https(hostUri, username, password, acceptUntrustedCerts);
             }
             else
             {
-                await nexus.execute_http(searchUri, username, password);
+                await nexus.execute_http(hostUri, username, password);
             }
-            console.log(`Completed search for asset using '${searchUri}'.`);
+            console.log(`Completed search for asset using '${hostUri}'.`);
         } catch (inner_err) {
-            console.log(`Could not complete search for asset using '${searchUri}'.`);
+            console.log(`Could not complete search for asset using '${hostUri}'.`);
             throw inner_err;
         }
 
