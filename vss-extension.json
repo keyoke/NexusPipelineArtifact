@@ -438,11 +438,42 @@
               "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}&a={{{artifact}}}",
               "resultSelector":"jsonpath:$.data[0]",
               "resultTemplate": "{ Value : \"{{{latestRelease}}}\", DisplayValue : \"{{{latestRelease}}}\" }"
+            },
+            {
+              "target": "createwebhook",
+              "endpointUrl": "{{{endpoint.url}}}api/v3/repos/{{{definition}}}/hooks",
+              "requestVerb": "Post",
+              "requestContent": "{\"name\":\"web\", \"active\":true, \"events\":[\"push\", \"pull_request\", \"issue_comment\"], \"config\": {\"secret\":\"{{{secret}}}\", \"url\": \"{{{payloadUrl}}}\", \"content_type\": \"json\"}}",
+              "resultSelector": "jsonpath:$"
+            },
+            {
+              "target": "deletewebhook",
+              "endpointUrl": "{{{endpoint.url}}}api/v3/repos/{{{definition}}}/hooks/{{{id}}}",
+              "requestVerb": "Delete",
+              "resultSelector": "none"
+            },
+            {
+              "target": "listwebhook",
+              "endpointUrl": "{{{endpoint.url}}}api/v3/repos/{{{definition}}}/hooks",
+              "requestVerb": "Get",
+              "resultSelector": "jsonpath:$.[*]",
+              "resultTemplate": "{ \"value\" : \"{{{config.url}}}\", \"displayValue\" : \"{{{config.url}}}\", \"data\": { \"id\": {{{id}}} }}"
             }
           ],
           "ArtifactTriggerConfiguration" : {
-              "isTriggerSupported": false
-          }
+              "isTriggerSupported": true,
+              "isTriggerSupportedOnlyInHosted": false,
+              "resources": {
+                "TriggerDisabledMessage": "Enabling the trigger will create a new release every time there is a change on the Nexus Maven Repository"
+              },
+              "payloadHashHeaderName": "X-Nexus-Webhook-Signature",
+              "webhookPayloadMapping" : {
+                  "version": "{{component.version}}",
+                  "artifact": "{{component.name}}",
+                  "group": "{{component.group}}",
+                  "definition": "{{repositoryName}}"
+              }
+          }  
         }
       },
       {
@@ -728,10 +759,41 @@
             "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version",
             "resultSelector":"jsonpath:$.items[0]",
             "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+          },
+          {
+            "target": "createwebhook",
+            "endpointUrl": "{{{endpoint.url}}}api/v3/repos/{{{definition}}}/hooks",
+            "requestVerb": "Post",
+            "requestContent": "{\"name\":\"web\", \"active\":true, \"events\":[\"push\", \"pull_request\", \"issue_comment\"], \"config\": {\"secret\":\"{{{secret}}}\", \"url\": \"{{{payloadUrl}}}\", \"content_type\": \"json\"}}",
+            "resultSelector": "jsonpath:$"
+          },
+          {
+            "target": "deletewebhook",
+            "endpointUrl": "{{{endpoint.url}}}api/v3/repos/{{{definition}}}/hooks/{{{id}}}",
+            "requestVerb": "Delete",
+            "resultSelector": "none"
+          },
+          {
+            "target": "listwebhook",
+            "endpointUrl": "{{{endpoint.url}}}api/v3/repos/{{{definition}}}/hooks",
+            "requestVerb": "Get",
+            "resultSelector": "jsonpath:$.[*]",
+            "resultTemplate": "{ \"value\" : \"{{{config.url}}}\", \"displayValue\" : \"{{{config.url}}}\", \"data\": { \"id\": {{{id}}} }}"
           }
         ],
         "ArtifactTriggerConfiguration" : {
-            "isTriggerSupported": false
+            "isTriggerSupported": true,
+            "isTriggerSupportedOnlyInHosted": false,
+            "resources": {
+              "TriggerDisabledMessage": "Enabling the trigger will create a new release every time there is a change on the Nexus Maven Repository"
+            },
+            "payloadHashHeaderName": "X-Nexus-Webhook-Signature",
+            "webhookPayloadMapping" : {
+              "version": "{{component.version}}",
+              "artifact": "{{component.name}}",
+              "group": "{{component.group}}",
+              "definition": "{{repositoryName}}"
+            }
         }
       }
     }
