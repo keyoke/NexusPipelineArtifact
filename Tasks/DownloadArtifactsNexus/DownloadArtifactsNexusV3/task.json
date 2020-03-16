@@ -17,7 +17,7 @@
     "version": {
         "Major": 3,
         "Minor": 0,
-        "Patch": 36
+        "Patch": 37
     },
     "minimumAgentVersion": "1.99.0",
     "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v3",
@@ -155,14 +155,14 @@
       {
         "target": "repository",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{endpoint.url}}service/rest/v1/repositories",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/repositories",
         "resultSelector":"jsonpath:$.[?(@.format=='maven2')]",
         "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
       },
       {
         "target": "group",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{endpoint.url}}service/rest/v1/search?repository={{{repository}}}",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}",
         "parameters":{
           "repository": "$(repository)"
         },
@@ -172,7 +172,7 @@
       {
         "target": "artifact",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{endpoint.url}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{group}}",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}",
         "parameters":{
           "repository": "$(repository)",
           "group":"$(group)"
@@ -183,7 +183,7 @@
       {
         "target": "baseVersion",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{endpoint.url}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{group}}&maven.artifactId={{artifact}}&sort=version",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version",
         "parameters":{
           "repository": "$(repository)",
           "group":"$(group)",

@@ -17,7 +17,7 @@
     "version": {
         "Major": 2,
         "Minor": 0,
-        "Patch": 36
+        "Patch": 37
     },
     "minimumAgentVersion": "1.99.0",
     "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v2",
@@ -155,14 +155,14 @@
       {
         "target": "repository",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{endpoint.url}}service/local/all_repositories",
+        "endpointUrl":"{{{endpoint.url}}}service/local/all_repositories",
         "resultSelector":"jsonpath:$.data[?(@.provider=='maven2')]",
         "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{id}}}\" }"
       },
       {
         "target": "group",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{endpoint.url}}service/local/lucene/search?repositoryId={{{repository}}}&cn=maven",
+        "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{repository}}}&cn=maven",
         "parameters":{
           "repository": "$(repository)"
         },
@@ -172,7 +172,7 @@
       {
         "target": "artifact",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{endpoint.url}}service/local/lucene/search?repositoryId={{{repository}}}&g={{group}}",
+        "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{repository}}}&g={{{group}}}",
         "parameters":{
           "repository": "$(repository)",
           "group":"$(group)"
@@ -183,7 +183,7 @@
       {
         "target": "baseVersion",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{endpoint.url}}service/local/lucene/search?repositoryId={{{repository}}}&g={{group}}&a={{artifact}}",
+        "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{repository}}}&g={{{group}}}&a={{{artifact}}}",
         "parameters":{
           "repository": "$(repository)",
           "group":"$(group)",
