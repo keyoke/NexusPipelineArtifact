@@ -4,7 +4,7 @@ pr: none
 variables:
   MajorVersion : 1
   MinorVersion : 0
-  PatchVersion : $[counter(format('{0}.{1}',variables['MajorVersion'],variables['MinorVersion']), 93)]
+  PatchVersion : $[counter(format('nexus-extension-{0}.{1}',variables['MajorVersion'],variables['MinorVersion']), 93)]
 stages:
   - stage : build_package
     displayName: Build & Package Extension
