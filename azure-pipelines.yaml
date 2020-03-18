@@ -1,6 +1,10 @@
 trigger:
 - master
 pr: none
+variables:
+  MajorVersion : 1
+  MinorVersion : 0
+  PatchVersion : $[counter(format('{0}.{1}',variables['MajorVersion'],variables['MinorVersion']), 93)]
 stages:
   - stage : build_package
     displayName: Build & Package Extension
@@ -9,10 +13,6 @@ stages:
         displayName: Build & Package Extension
         pool:
           vmImage: 'windows-latest'
-        variables:
-          MajorVersion : 1
-          MinorVersion : 0
-          PatchVersion : $[counter(format('{0}.{1}',variables['MajorVersion'],variables['MinorVersion']), 93)]
         steps:
         - checkout: self
           persistCredentials: true
