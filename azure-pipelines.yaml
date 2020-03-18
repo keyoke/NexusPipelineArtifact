@@ -26,7 +26,7 @@ stages:
         - script: npm install
           displayName: 'Install Dependencies'
         - script: |
-            npm run package -- --override '{\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}'
+            npm run package -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
           displayName: 'Build & Package'
         - task: PowerShell@2
           displayName: 'Tag Git Commit'
