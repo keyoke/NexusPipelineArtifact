@@ -1,3 +1,4 @@
+trigger: none
 stages:
   - stage : build_package
     displayName: Build & Package Extension
@@ -9,7 +10,7 @@ stages:
         variables:
           MajorVersion : 1
           MinorVersion : 0
-          PatchVersion : $[counter(format('{0}.{1}',variables['MajorVersion'],variables['MinorVersion']),92)]
+          PatchVersion : $[counter(format('{0}.{1}',variables['MajorVersion'],variables['MinorVersion']), 93)]
         steps:
         - checkout: self
           persistCredentials: true
