@@ -1,0 +1,23 @@
+trigger:
+  - users/keyoke/servicing
+  
+stages:
+  - stage : build_package
+    displayName: Build & Package Extension
+    jobs:
+      - job : build_package
+        displayName: Build & Package Extension
+        pool:
+          vmImage: 'windows-latest'
+        steps:
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '10.x'
+          displayName: 'Install Node.js'
+        - script: npm install -g tfx-cli
+          displayName: 'Install Node CLI for Azure DevOps'
+        - script: |
+            npm install
+            npm run package
+          displayName: 'npm install, build & package'
+  
