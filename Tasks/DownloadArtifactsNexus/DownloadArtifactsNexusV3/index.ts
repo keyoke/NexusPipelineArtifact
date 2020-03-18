@@ -68,7 +68,10 @@ async function run() {
         if (!fs.existsSync(downloadPath)) {
             tl.debug('downloadPath folder does not exist therefore creating folder.');
             shell.mkdir(downloadPath);
-        }        
+        }      
+        
+        // Set working folder
+        shell.cd(downloadPath);  
 
         // Get the proxy configured for the DevOps Agent
         const agentProxy : tl.ProxyConfiguration | null = tl.getHttpProxyConfiguration();
