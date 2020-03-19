@@ -95,6 +95,7 @@ export class httpHelper {
                             }).on('end', function(){
                                 file.end();
                             });
+                            console.log(`##vso[task.setvariable variable=MAVEN_REPOSITORY_ASSET_FILENAME;isSecret=false;isOutput=true;]${filename}`)
                             console.log(`Successfully downloaded asset '${filename}' using '${downloadUri}'.`);
                             resolve();
                         } else
