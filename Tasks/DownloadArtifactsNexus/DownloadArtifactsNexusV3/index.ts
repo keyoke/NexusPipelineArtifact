@@ -106,7 +106,13 @@ async function run() {
         hostUri.pathname = requestPath;
 
         // Query Parameters
-        hostUri.searchParams.append("sort", "version");
+        
+        // *** ONLY Works in Nexus 3.16+ *** 
+        // https://help.sonatype.com/repomanager3/rest-and-integration-api/search-api#SearchAPI-DownloadingtheLatestVersionofanAsset
+        // We could use /service/rest/v1/status and look at the response header "server: Nexus/3.21.1-01 (OSS)"
+        // hostUri.searchParams.append("sort", "version");
+        // *** ONLY Works in Nexus 3.16+ *** 
+
         hostUri.searchParams.append("repository", repository);
         hostUri.searchParams.append("maven.groupId", group);
         hostUri.searchParams.append("maven.artifactId", artifact);
