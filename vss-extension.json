@@ -27,6 +27,13 @@
     "type": "git",
     "uri": "https://github.com/keyoke/NexusPipelineArtifact"
   },
+  "badges": [
+    {
+        "href": "https://dev.azure.com/softcores/NexusPipelineArtifact/_build?definitionId=2&_a=summary",
+        "uri": "https://dev.azure.com/softcores/NexusPipelineArtifact/_apis/build/status/keyoke.NexusPipelineArtifact?branchName=master",
+        "description": "Azure Pipeline for NexusPipelineArtifact"
+    }
+  ],
   "tags": [
     "Sonatype",
     "Nexus",
