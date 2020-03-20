@@ -49,6 +49,9 @@
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
+  "demands": [ 
+    "api-version/3.0"
+  ],
   "icons": {
     "default": "icon-nexus-logo.png"
   },
