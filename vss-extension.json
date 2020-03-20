@@ -18,6 +18,11 @@
       "path": "LICENSE"
     }
   },
+  "links": {
+      "support": {
+          "uri": "https://blog.soft-cor.com"
+      }
+  },
   "repository": {
     "type": "git",
     "uri": "https://github.com/keyoke/NexusPipelineArtifact"
