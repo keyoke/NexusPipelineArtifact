@@ -1,0 +1,55 @@
+trigger:
+- master
+pr: none
+variables:
+  MajorVersion : 1
+  MinorVersion : 0
+  PatchVersion : $[counter(format('nexus-extension-{0}.{1}',variables['MajorVersion'],variables['MinorVersion']), 93)]
+stages:
+  - stage : build_package
+    displayName: Build & Package Extension
+    jobs:
+      - job : build_package
+        displayName: Build & Package Extension
+        pool:
+          vmImage: 'windows-latest'
+        steps:
+        - checkout: self
+          persistCredentials: true
+          clean: true
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '10.x'
+          displayName: 'Install Node.js'
+        - script: npm install -g tfx-cli
+          displayName: 'Install Node CLI for Azure DevOps'
+        - script: npm install
+          displayName: 'Install Dependencies'
+        - script: |
+            npm run package -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
+          displayName: 'Build & Package'
+        - task: PowerShell@2
+          displayName: 'Tag Git Commit'
+          inputs:
+            targetType: 'inline'
+            script: |
+              git tag "v$(MajorVersion).$(MinorVersion).$(PatchVersion)"
+        - task: PowerShell@2
+          displayName: 'Push Git Tags'
+          inputs:
+            targetType: 'inline'
+            script: |
+              git push --tags
+        - task: GitHubRelease@1
+          displayName: 'Publish Extension as Release'
+          inputs:
+            gitHubConnection: 'github.com_keyoke'
+            repositoryName: '$(Build.Repository.Name)'
+            action: 'create'
+            target: '$(Build.SourceVersion)'
+            tagSource: 'gitTag'
+            tagPattern: 'v$(MajorVersion).$(MinorVersion).$(PatchVersion)'
+            assets: '$(System.DefaultWorkingDirectory)\dist\*.vsix'
+            changeLogCompareToRelease: 'lastFullRelease'
+            changeLogType: 'commitBased'
+  
