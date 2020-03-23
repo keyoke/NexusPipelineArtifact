@@ -2,8 +2,9 @@ import tl = require('azure-pipelines-task-lib/task');
 import shell = require("shelljs");
 import path = require("path");
 import fs = require('fs');
+import { IhttpHelper } from './IhttpHelper';
 import { httpHelper } from './httpHelper';
-const nexus = new httpHelper();
+const nexus : IhttpHelper = new httpHelper();
 
 async function run() {
     console.log(`Downloading artifact.`);
@@ -131,7 +132,7 @@ async function run() {
         try {
             // need to refactor this logic to reduce duplication of code
             if (hostUri.protocol === "https:") {
-                await nexus.execute_https(hostUri, username, password, acceptUntrustedCerts);
+                await nexus.execute_https(hostUri, acceptUntrustedCerts, username, password);
             }
             else
             {
