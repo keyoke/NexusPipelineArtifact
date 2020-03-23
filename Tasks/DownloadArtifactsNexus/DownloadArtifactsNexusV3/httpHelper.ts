@@ -3,26 +3,33 @@ import path = require("path");
 import fs = require('fs');
 import http = require('http');
 import https = require('https');
+import { IhttpHelper } from './IhttpHelper';
 
-export class httpHelper {
-    public async execute_http(searchUri : URL, username : string, password : string) : Promise<void>
+export class httpHelper implements IhttpHelper {
+
+    public async execute_http(searchUri : URL) : Promise<void>;
+    public async execute_http(searchUri : URL, username? : string, password? : string) : Promise<void>
     {
         tl.debug(`execute_http.`);
-
-        const authBase64 : string = Buffer.from(username + ':' + password).toString('base64');
-
-        // Make sure the secret is correctly scrubbed from any logs
-        tl.setSecret(authBase64);
 
         let options : http.RequestOptions = {
             host: searchUri.hostname,
             path: `${searchUri.pathname}?${searchUri.searchParams}`,
             method: 'GET',
             headers: {
-                'Authorization': 'Basic ' + authBase64,
                 'Accept': 'application/json'
             }   
         };
+
+        if(username && 
+            password)
+        {
+            const authBase64 : string = Buffer.from(username + ':' + password).toString('base64');
+
+            // Make sure the secret is correctly scrubbed from any logs
+            tl.setSecret(authBase64);
+            options.headers['Authorization'] = 'Basic ' + authBase64;
+        }
 
         // Setup new agent dont use the global one
         options.agent = new http.Agent(options);
@@ -32,14 +39,10 @@ export class httpHelper {
         await this.execute_request(http, options);
     }
 
-    public async execute_https(searchUri : URL, username : string, password : string, acceptUntrustedCerts : boolean)  : Promise<void>
+    public async execute_https(searchUri : URL, acceptUntrustedCerts : boolean)  : Promise<void>;
+    public async execute_https(searchUri : URL, acceptUntrustedCerts : boolean, username? : string, password? : string)  : Promise<void>
     {
         tl.debug(`execute_https.`);
-
-        const authBase64 : string = Buffer.from(username + ':' + password).toString('base64');
-
-        // Make sure the secret is correctly scrubbed from any logs
-        tl.setSecret(authBase64);
 
         let options : https.RequestOptions = {
             host: searchUri.hostname,
@@ -47,10 +50,18 @@ export class httpHelper {
             method: 'GET',
             rejectUnauthorized: !acceptUntrustedCerts, // By default ensure we validate SSL certificates
             headers: {
-                'Authorization': 'Basic ' + authBase64,
                 'Accept': 'application/json'
             }   
         };
+
+        if(!username && !password)
+        {
+            const authBase64 : string = Buffer.from(username + ':' + password).toString('base64');
+
+            // Make sure the secret is correctly scrubbed from any logs
+            tl.setSecret(authBase64);
+            options.headers['Authorization'] = 'Basic ' + authBase64;
+        }
 
         // Setup new agent dont use the global one
         options.agent = new https.Agent(options);
