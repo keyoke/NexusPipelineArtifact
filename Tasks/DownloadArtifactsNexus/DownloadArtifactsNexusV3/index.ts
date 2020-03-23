@@ -36,8 +36,15 @@ async function run() {
         // Token,
         tl.debug(`Service endpoint auth.scheme '${auth.scheme}'.`);
         // Get the Nexus auth details
-        const password : string | undefined = auth.parameters["password"];
-        const username : string | undefined = auth.parameters["username"];
+        let password : string = undefined;
+        let username : string = undefined;
+
+        if(auth.scheme === "UsernamePassword")
+        {
+            password = auth.parameters["password"];
+            username  = auth.parameters["username"];
+        }
+
         // Get the SSL cert options
         const acceptUntrustedCerts = (/true/i).test((tl.getEndpointDataParameter(connection, "acceptUntrustedCerts", true) ? tl.getEndpointDataParameter(connection, "acceptUntrustedCerts", true) : "false"));
         tl.debug(`acceptUntrustedCerts is set to '${acceptUntrustedCerts}'.`);
