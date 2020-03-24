@@ -719,27 +719,39 @@
           },
           {
             "target": "group",
-            "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}",
+            "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
             "resultSelector":"jsonpath:$.items[*].group",
-            "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }"
+            "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }",
+            "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+            "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
+            "initialContextTemplate":"{\"continuationToken\" : null}"
           },
           {
             "target": "artifact",
-            "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}",
+            "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
             "resultSelector":"jsonpath:$.items[*].name",
-            "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }"
+            "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }",
+            "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+            "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
+            "initialContextTemplate":"{\"continuationToken\" : null}"
           },
           {
             "target": "defaultVersionSpecific",
-            "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version",
+            "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
             "resultSelector":"jsonpath:$.items[*]",
-            "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+            "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }",
+            "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+            "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
+            "initialContextTemplate":"{\"continuationToken\" : null}"
           },
           {
             "target": "versions",
-            "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version",
+            "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
             "resultSelector":"jsonpath:$.items[*]",
-            "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+            "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }",
+            "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+            "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
+            "initialContextTemplate":"{\"continuationToken\" : null}"
           },
           {
             "target": "latestversion",
