@@ -53,7 +53,8 @@ export class httpHelper implements IhttpHelper {
             }   
         };
 
-        if(!username && !password)
+        if(username && 
+            password)
         {
             const authBase64 : string = Buffer.from(username + ':' + password).toString('base64');
 
