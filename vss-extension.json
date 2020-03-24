@@ -732,7 +732,7 @@
             "resultSelector":"jsonpath:$.items[*].name",
             "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }",
             "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
-            "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
+            "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
             "initialContextTemplate":"{\"continuationToken\" : null}"
           },
           {
@@ -741,7 +741,7 @@
             "resultSelector":"jsonpath:$.items[*]",
             "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }",
             "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
-            "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
+            "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
             "initialContextTemplate":"{\"continuationToken\" : null}"
           },
           {
@@ -750,7 +750,7 @@
             "resultSelector":"jsonpath:$.items[*]",
             "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }",
             "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
-            "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
+            "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
             "initialContextTemplate":"{\"continuationToken\" : null}"
           },
           {
