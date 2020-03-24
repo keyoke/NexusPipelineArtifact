@@ -11,6 +11,7 @@ Go to project settings -> Services Connections tab and create a New Service Conn
 
 The authentication scenarios which are currently supported by the extension are :
 * Username & Password
+* Anonymous
 
 If your Nexus Repository server is deployed in a private cloud which is behind a firewall and the Azure DevOps Service does not have line of sight to the server - the Artifact fields will not be dynamically populated at design time and you will have to manually provide these values.
 
