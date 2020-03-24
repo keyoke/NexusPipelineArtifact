@@ -17,7 +17,7 @@
     "version": {
         "Major": 3,
         "Minor": 0,
-        "Patch": 43
+        "Patch": 44
     },
     "minimumAgentVersion": "1.99.0",
     "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v3",
@@ -166,35 +166,44 @@
       {
         "target": "group",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
         "parameters":{
           "repository": "$(repository)"
         },
         "resultSelector":"jsonpath:$.items[*].group",
-        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }",
+        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+        "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
+        "initialContextTemplate":"{\"continuationToken\" : null}"
       },
       {
         "target": "artifact",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
         "parameters":{
           "repository": "$(repository)",
           "group":"$(group)"
         },
         "resultSelector":"jsonpath:$.items[*].name",
-        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }",
+        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+        "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
+        "initialContextTemplate":"{\"continuationToken\" : null}"
       },
       {
         "target": "baseVersion",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
         "parameters":{
           "repository": "$(repository)",
           "group":"$(group)",
           "artifact":"$(artifact)"
         },
         "resultSelector":"jsonpath:$.items[*]",
-        "resultTemplate": "{ \"Value\" : \"{{{version}}}\", \"DisplayValue\" : \"{{{version}}}\" }"
+        "resultTemplate": "{ \"Value\" : \"{{{version}}}\", \"DisplayValue\" : \"{{{version}}}\" }",
+        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+        "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
+        "initialContextTemplate":"{\"continuationToken\" : null}"
       }
     ],
     "execution": {
