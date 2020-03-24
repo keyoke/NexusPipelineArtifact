@@ -35,15 +35,6 @@ async function run() {
 
         // Token,
         tl.debug(`Service endpoint auth.scheme '${auth.scheme}'.`);
-        // Get the Nexus auth details
-        let password : string = undefined;
-        let username : string = undefined;
-
-        if(auth.scheme === "UsernamePassword")
-        {
-            password = auth.parameters["password"];
-            username  = auth.parameters["username"];
-        }
 
         // Get the SSL cert options
         const acceptUntrustedCerts = (/true/i).test((tl.getEndpointDataParameter(connection, "acceptUntrustedCerts", true) ? tl.getEndpointDataParameter(connection, "acceptUntrustedCerts", true) : "false"));
@@ -142,11 +133,25 @@ async function run() {
         try {
             // need to refactor this logic to reduce duplication of code
             if (hostUri.protocol === "https:") {
-                await nexus.execute_https(hostUri, acceptUntrustedCerts, username, password);
+                if(auth.scheme === "UsernamePassword")
+                {
+                    await nexus.execute_https(hostUri, acceptUntrustedCerts, auth.parameters["username"], auth.parameters["password"]);
+                }
+                else
+                {
+                    await nexus.execute_https(hostUri, acceptUntrustedCerts);
+                }
             }
             else
             {
-                await nexus.execute_http(hostUri, username, password);
+                if(auth.scheme === "UsernamePassword")
+                {
+                    await nexus.execute_http(hostUri, auth.parameters["username"], auth.parameters["password"]);
+                }
+                else
+                {
+                    await nexus.execute_http(hostUri);
+                }
             }
             console.log(`Completed search for asset using '${hostUri}'.`);
         } catch (inner_err) {
