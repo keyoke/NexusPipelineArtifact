@@ -25,3 +25,15 @@ Once you have selected the Service Connection, you will be able to select the re
 ![Linking Nexus Maven Repository artifact](images/screen3.png)
 
 
+### Output Variables
+The tasks proviuded by this extension make use of output variables to provide the downloaded assets file name to subsequent tasks executing in the same pipeline.
+
+The following output variables are set:
+
+* MAVEN_REPOSITORY_ASSET_FILENAME - The final file name of the Asset which was downloaded from your Maven Repository.
+
+
+
+
+
+
