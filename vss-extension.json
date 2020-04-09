@@ -192,7 +192,7 @@
         ],
         "properties": {
           "name": "nexus-maven-repository",
-          "displayName": "Maven Repo v2",
+          "displayName": "MavenRepoV2",
           "endpointTypeId": "nexus",
           "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
           "downloadTaskId": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
@@ -482,7 +482,7 @@
       ],
       "properties": {
         "name": "nexus-maven-repository-v3",
-        "displayName": "Maven Repo v3",
+        "displayName": "MavenRepoV3",
         "endpointTypeId": "nexus",
         "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
         "downloadTaskId": "6a26339d-ca44-4f1c-8511-fde5b7550a68",
