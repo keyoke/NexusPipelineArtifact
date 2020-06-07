@@ -165,13 +165,8 @@
           ]
         },
         "constraints": [
-          {
-            "name": "Feature",
-            "properties": {
-              "featureId": "ms.vss-distributedtask-web.new-serviceconnections-ui"
-            }
-          }
-        ]
+          
+         ]
       },
       {
           "id": "nexus-build-release-task",
