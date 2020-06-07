@@ -32,7 +32,7 @@ export class httpHelper implements IhttpHelper {
         }
 
         // Setup new agent dont use the global one
-        options.agent = new http.Agent(options);
+        options.agent = new http.Agent();
         options.port = searchUri.port || options.defaultPort;
     
         // execute the http request
@@ -65,7 +65,7 @@ export class httpHelper implements IhttpHelper {
         }
 
         // Setup new agent dont use the global one
-        options.agent = new https.Agent(options);
+        options.agent = new https.Agent();
         options.port = searchUri.port || options.defaultPort;
 
         // execute the https request
