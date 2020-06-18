@@ -447,6 +447,11 @@
               "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
             },
             {
+              "target": "artifactDetails",
+              "dataSourceName": "artifact",
+              "resultTemplate": "{ Name: \"{{defaultResultKey}}\", StreamType: \"{{extension}}\", downloadUrl : \"{{{endpoint.url}}}service/local/artifact/maven/redirect?r={{{definition}}&g={{{group}}}&a={{{defaultResultKey}}}&p={{{extension}}}&c={{{classifier}}}\" }"
+            },
+            {
               "target": "latestversion",
               "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}&a={{{artifact}}}",
               "resultSelector":"jsonpath:$.data[0]",
@@ -738,6 +743,11 @@
             "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
             "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
             "initialContextTemplate":"{\"continuationToken\" : null}"
+          },
+          {
+            "target": "artifactDetails",
+            "dataSourceName": "artifact",
+            "resultTemplate": "{ Name: \"{{defaultResultKey}}\", StreamType: \"{{extension}}\", downloadUrl : \"{{{endpoint.url}}}service/rest/v1/search/assets/download?repository={{{definition}}&maven.groupId={{{group}}}&maven.artifactId={{{defaultResultKey}}}&maven.baseVersion={{{version}}}&maven.extension={{{extension}}}&maven.classifier={{{classifier}}}\" }"
           },
           {
             "target": "versions",
