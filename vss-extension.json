@@ -449,7 +449,7 @@
             {
               "target": "artifactDetails",
               "dataSourceName": "artifact",
-              "resultTemplate": "{ Name: \"{{defaultResultKey}}\", StreamType: \"{{extension}}\", downloadUrl : \"{{{endpoint.url}}}service/local/artifact/maven/redirect?r={{{definition}}&g={{{group}}}&a={{{defaultResultKey}}}&p={{{extension}}}&c={{{classifier}}}\" }"
+              "resultTemplate": "{ Name: \"{{defaultResultKey}}\", StreamType: \"{{extension}}\", downloadUrl : \"{{{endpoint.url}}}service/local/artifact/maven/redirect?r={{{definition}}}&g={{{group}}}&a={{{defaultResultKey}}}&p={{{extension}}}&c={{{classifier}}}\" }"
             },
             {
               "target": "latestversion",
@@ -747,7 +747,7 @@
           {
             "target": "artifactDetails",
             "dataSourceName": "artifact",
-            "resultTemplate": "{ Name: \"{{defaultResultKey}}\", StreamType: \"{{extension}}\", downloadUrl : \"{{{endpoint.url}}}service/rest/v1/search/assets/download?repository={{{definition}}&maven.groupId={{{group}}}&maven.artifactId={{{defaultResultKey}}}&maven.baseVersion={{{version}}}&maven.extension={{{extension}}}&maven.classifier={{{classifier}}}\" }"
+            "resultTemplate": "{ Name: \"{{defaultResultKey}}\", StreamType: \"{{extension}}\", downloadUrl : \"{{{endpoint.url}}}service/rest/v1/search/assets/download?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{defaultResultKey}}}&maven.baseVersion={{{version}}}&maven.extension={{{extension}}}&maven.classifier={{{classifier}}}\" }"
           },
           {
             "target": "versions",
