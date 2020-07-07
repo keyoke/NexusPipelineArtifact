@@ -17,9 +17,9 @@
     "version": {
         "Major": 3,
         "Minor": 0,
-        "Patch": 45
+        "Patch": 48
     },
-    "minimumAgentVersion": "1.99.0",
+    "minimumAgentVersion": "2.144.0",
     "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v3",
     "inputs": [
             {
