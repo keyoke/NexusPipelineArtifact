@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.98",
+  "version": "1.0.105",
   "name": "Sonatype Nexus Repository Release Artifact",
   "description": "Add support for Sonatype Nexus Repository as an artifact for Release Pipelines",
   "public": true,
@@ -406,14 +406,8 @@
             }
           ],
           "taskInputMapping": {
-            "connection": "{{{connection}}}",
             "repository": "{{{definition}}}",
-            "group": "{{{group}}}",
-            "artifact": "{{{artifact}}}",
-            "baseVersion": "{{{version}}}",
-            "packaging": "{{{packaging}}}",
-            "classifier": "{{{classifier}}}",
-            "extension": "{{{extension}}}"
+            "baseVersion": "{{{version}}}"
           },
           "dataSourceBindings": [
             {
@@ -696,14 +690,8 @@
           }
         ],
         "taskInputMapping": {
-          "connection": "{{{connection}}}",
           "repository": "{{{definition}}}",
-          "group": "{{{group}}}",
-          "artifact": "{{{artifact}}}",
-          "baseVersion": "{{{version}}}",
-          "packaging": "{{{packaging}}}",
-          "classifier": "{{{classifier}}}",
-          "extension": "{{{extension}}}"
+          "baseVersion": "{{{version}}}"
         },
         "dataSourceBindings": [
           {
