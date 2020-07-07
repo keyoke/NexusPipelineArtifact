@@ -2,14 +2,14 @@
   "manifestVersion": 1,
   "id": "nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.92",
+  "version": "1.0.95",
   "name": "Sonatype Nexus Repository Release Artifact",
   "description": "Add support for Sonatype Nexus Repository as an artifact for Release Pipelines",
   "public": true,
   "galleryFlags": [
 
   ],
-  "categories": [ "Azure Pipelines" ],
+  "categories": [ "Build and release" ],
   "content": {
     "details": {
         "path": "overview.md"
@@ -191,7 +191,7 @@
           "endpointTypeId": "nexus",
           "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
           "downloadTaskId": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
-          "artifactType": "Build",
+          "artifactType": "Package",
           "inputDescriptors": [
             {
               "id": "connection",
@@ -431,8 +431,8 @@
             {
               "target": "artifact",
               "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}",
-              "resultSelector":"jsonpath:$.data[*].artifactId",
-              "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }"
+              "resultSelector":"jsonpath:$.data[*]",
+              "resultTemplate": "{ Value : \"{{{artifactId}}}\", DisplayValue : \"{{{artifactId}}}\" }"
             },
             {
               "target": "defaultVersionSpecific",
@@ -445,11 +445,6 @@
               "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}&a={{{artifact}}}",
               "resultSelector":"jsonpath:$.data[*]",
               "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
-            },
-            {
-              "target": "artifactDetails",
-              "dataSourceName": "artifact",
-              "resultTemplate": "{ Name: \"{{defaultResultKey}}\", StreamType: \"{{extension}}\", downloadUrl : \"{{{endpoint.url}}}service/local/artifact/maven/redirect?r={{{definition}}}&g={{{group}}}&a={{{defaultResultKey}}}&p={{{extension}}}&c={{{classifier}}}\" }"
             },
             {
               "target": "latestversion",
@@ -486,7 +481,7 @@
         "endpointTypeId": "nexus",
         "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
         "downloadTaskId": "6a26339d-ca44-4f1c-8511-fde5b7550a68",
-        "artifactType": "Build",
+        "artifactType": "Package",
         "inputDescriptors": [
           {
             "id": "connection",
@@ -729,8 +724,8 @@
           {
             "target": "artifact",
             "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
-            "resultSelector":"jsonpath:$.items[*].name",
-            "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }",
+            "resultSelector":"jsonpath:$.items[*]",
+            "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }",
             "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
             "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
             "initialContextTemplate":"{\"continuationToken\" : null}"
@@ -743,11 +738,6 @@
             "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
             "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
             "initialContextTemplate":"{\"continuationToken\" : null}"
-          },
-          {
-            "target": "artifactDetails",
-            "dataSourceName": "artifact",
-            "resultTemplate": "{ Name: \"{{defaultResultKey}}\", StreamType: \"{{extension}}\", downloadUrl : \"{{{endpoint.url}}}service/rest/v1/search/assets/download?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{defaultResultKey}}}&maven.baseVersion={{{version}}}&maven.extension={{{extension}}}&maven.classifier={{{classifier}}}\" }"
           },
           {
             "target": "versions",
