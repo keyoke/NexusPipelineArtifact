@@ -26,8 +26,11 @@ stages:
         - script: npm install
           displayName: 'Install Dependencies'
         - script: |
-            npm run package -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
-          displayName: 'Build & Package'
+            npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
+          displayName: 'Build & Package Server'
+        - script: |
+            npm run package:ServiceVSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
+          displayName: 'Build & Package Service'
         - task: PowerShell@2
           displayName: 'Tag Git Commit'
           inputs:

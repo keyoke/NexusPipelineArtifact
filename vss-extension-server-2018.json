@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "nexus-custom-release-artifact-extension",
+  "id": "nexus-custom-release-artifact-server-2018-extension",
   "publisher": "soft-cor",
   "version": "1.0.111",
   "name": "Sonatype Nexus Repository Release Artifact",
@@ -9,7 +9,7 @@
   "galleryFlags": [
 
   ],
-  "categories": [ "Azure Pipelines" ],
+  "categories": [ "Build and release" ],
   "content": {
     "details": {
         "path": "overview.md"
@@ -98,10 +98,10 @@
       "addressable": true
     },
     {
-      "path": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV2"
+      "path": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV0_2"
     },
     {
-      "path": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV3"
+      "path": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV0_3"
     }
   ],
   "contributions": [
@@ -178,7 +178,7 @@
               "ms.vss-distributed-task.tasks"
           ],
           "properties": {
-              "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV2"
+              "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV0_2"
           }
       },
       {
@@ -409,8 +409,7 @@
             }
           ],
           "taskInputMapping": {
-            "repository": "{{{definition}}}",
-            "baseVersion": "{{{version}}}"
+
           },
           "dataSourceBindings": [
             {
@@ -462,7 +461,7 @@
           "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-          "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV3"
+          "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV0_3"
       }
     },
     {
@@ -693,8 +692,6 @@
           }
         ],
         "taskInputMapping": {
-          "repository": "{{{definition}}}",
-          "baseVersion": "{{{version}}}"
         },
         "dataSourceBindings": [
           {

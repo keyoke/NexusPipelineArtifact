@@ -1,9 +1,9 @@
 {
     "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-    "id": "6a26339d-ca44-4f1c-8511-fde5b7550a68",
-    "name": "DownloadArtifactsNexusMavenRepositoryV3",
-    "friendlyName": "Download Artifacts - Nexus Maven Repository v3",
-    "description": "Download Nexus Maven Repository v3 Artifact",
+    "id": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
+    "name": "DownloadArtifactsNexusMavenRepository",
+    "friendlyName": "Download Artifacts - Nexus Maven Repository v2",
+    "description": "Download Nexus Maven Repository v2 Artifact",
     "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
     "category": "Deploy",
     "visibility": ["Release"],
@@ -15,12 +15,12 @@
     "preview": false,
     "author": "soft-cor",
     "version": {
-        "Major": 3,
+        "Major": 2,
         "Minor": 0,
-        "Patch": 53
+        "Patch": 50
     },
     "minimumAgentVersion": "2.144.0",
-    "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v3",
+    "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v2",
     "inputs": [
             {
             "name": "connection",
@@ -34,9 +34,10 @@
             "helpMarkDown": "Nexus Repository service connection"
           },
           {
-            "name": "repository",
+            "name": "definition",
             "aliases": [
-              "RepositoryId"
+              "RepositoryId",
+              "repository"
             ],
             "type": "pickList",
             "label": "Repository Id",
@@ -76,7 +77,7 @@
             "helpMarkDown": "The Maven artifactId for a component."
           },
           {
-            "name": "baseVersion",
+            "name": "version",
             "aliases": [
               "BaseVersion"
             ],
@@ -157,53 +158,44 @@
     }],
     "dataSourceBindings": [
       {
-        "target": "repository",
+        "target": "definition",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/repositories",
-        "resultSelector":"jsonpath:$.[?(@.format=='maven2')]",
-        "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        "endpointUrl":"{{{endpoint.url}}}service/local/all_repositories",
+        "resultSelector":"jsonpath:$.data[?(@.provider=='maven2')]",
+        "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{id}}}\" }"
       },
       {
         "target": "group",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+        "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&cn=maven",
         "parameters":{
-          "repository": "$(repository)"
+          "definition": "$(definition)"
         },
-        "resultSelector":"jsonpath:$.items[*].group",
-        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }",
-        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
-        "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
-        "initialContextTemplate":"{\"continuationToken\" : null}"
+        "resultSelector":"jsonpath:$.data[*].groupId",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
       },
       {
         "target": "artifact",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+        "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}",
         "parameters":{
-          "repository": "$(repository)",
+          "definition": "$(definition)",
           "group":"$(group)"
         },
-        "resultSelector":"jsonpath:$.items[*].name",
-        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }",
-        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
-        "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
-        "initialContextTemplate":"{\"continuationToken\" : null}"
+        "resultSelector":"jsonpath:$.data[*].artifactId",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
       },
       {
-        "target": "baseVersion",
+        "target": "version",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+        "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}&a={{{artifact}}}",
         "parameters":{
-          "repository": "$(repository)",
+          "definition": "$(definition)",
           "group":"$(group)",
           "artifact":"$(artifact)"
         },
-        "resultSelector":"jsonpath:$.items[*]",
-        "resultTemplate": "{ \"Value\" : \"{{{version}}}\", \"DisplayValue\" : \"{{{version}}}\" }",
-        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
-        "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
-        "initialContextTemplate":"{\"continuationToken\" : null}"
+        "resultSelector":"jsonpath:$.data[*].version",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }"
       }
     ],
     "execution": {

@@ -34,9 +34,10 @@
             "helpMarkDown": "Nexus Repository service connection"
           },
           {
-            "name": "repository",
+            "name": "definition",
             "aliases": [
-              "RepositoryId"
+              "RepositoryId",
+              "repository"
             ],
             "type": "pickList",
             "label": "Repository Id",
@@ -76,7 +77,7 @@
             "helpMarkDown": "The Maven artifactId for a component."
           },
           {
-            "name": "baseVersion",
+            "name": "version",
             "aliases": [
               "BaseVersion"
             ],
@@ -157,7 +158,7 @@
     }],
     "dataSourceBindings": [
       {
-        "target": "repository",
+        "target": "definition",
         "endpointId": "$(connection)",
         "endpointUrl":"{{{endpoint.url}}}service/rest/v1/repositories",
         "resultSelector":"jsonpath:$.[?(@.format=='maven2')]",
@@ -166,9 +167,9 @@
       {
         "target": "group",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
         "parameters":{
-          "repository": "$(repository)"
+          "definition": "$(definition)"
         },
         "resultSelector":"jsonpath:$.items[*].group",
         "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }",
@@ -179,9 +180,9 @@
       {
         "target": "artifact",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
         "parameters":{
-          "repository": "$(repository)",
+          "definition": "$(definition)",
           "group":"$(group)"
         },
         "resultSelector":"jsonpath:$.items[*].name",
@@ -191,11 +192,11 @@
         "initialContextTemplate":"{\"continuationToken\" : null}"
       },
       {
-        "target": "baseVersion",
+        "target": "version",
         "endpointId": "$(connection)",
-        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
         "parameters":{
-          "repository": "$(repository)",
+          "definition": "$(definition)",
           "group":"$(group)",
           "artifact":"$(artifact)"
         },
