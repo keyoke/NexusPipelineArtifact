@@ -2,14 +2,14 @@
   "manifestVersion": 1,
   "id": "nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.106",
+  "version": "1.0.107",
   "name": "Sonatype Nexus Repository Release Artifact",
   "description": "Add support for Sonatype Nexus Repository as an artifact for Release Pipelines",
   "public": true,
   "galleryFlags": [
 
   ],
-  "categories": [ "Azure Pipelines" ],
+  "categories": [ "Build and release" ],
   "content": {
     "details": {
         "path": "overview.md"
@@ -167,6 +167,16 @@
         "constraints": [
           
          ]
+      },
+      {
+          "id": "nexus-build-release-taskV0_2",
+          "type": "ms.vss-distributed-task.task",
+          "targets": [
+              "ms.vss-distributed-task.tasks"
+          ],
+          "properties": {
+              "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV0_2"
+          }
       },
       {
           "id": "nexus-build-release-task",
@@ -453,14 +463,24 @@
         }
       },
       {
-        "id": "nexus-build-release-task-v3",
+        "id": "nexus-build-release-task-v0_3",
         "type": "ms.vss-distributed-task.task",
         "targets": [
             "ms.vss-distributed-task.tasks"
         ],
         "properties": {
-            "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV3"
+            "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV0_3"
         }
+      },
+      {
+      "id": "nexus-build-release-task-v3",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+          "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+          "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV3"
+      }
     },
     {
       "id": "nexus-custom-release-artifact-type-v3",
