@@ -1,6 +1,9 @@
 # Sonatype Nexus Repository artifact for Release Pipelines
 This extension provides support for Nexus Maven Repositories when leveraging Release Pipelines, the initial version includes Release Pipeline Artifact support for Nexus Maven Repositories as well as providing Azure Pipelines tasks for downloading assets from Maven Repositories.
 
+## Team Foundation Server 2018 Support
+The extension which is published to the marketplace is supported for the Azure DevOps Server 2019 and Azure DevOps Service targets only. If you wish to install this extension on TFS 2018 please download the latest sever 2018 VSIX package i.e. soft-cor.nexus-custom-release-artifact-server-2018-extension-[version].vsix from the [GitHub Releases](https://github.com/keyoke/NexusPipelineArtifact/releases).
+
 ## Usage
 This extension requires you to first configure a service connection to connect to your Nexus Repository server. Once connected, you can link a source artifact from the a Nexus Maven Repository and use these artifacts in your Release Pipeline.
 
