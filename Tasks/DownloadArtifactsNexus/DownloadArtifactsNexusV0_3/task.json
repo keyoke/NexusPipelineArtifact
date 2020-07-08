@@ -15,9 +15,9 @@
     "preview": false,
     "author": "soft-cor",
     "version": {
-        "Major": 0,
-        "Minor": 3,
-        "Patch": 52
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 53
     },
     "minimumAgentVersion": "2.144.0",
     "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v3",
