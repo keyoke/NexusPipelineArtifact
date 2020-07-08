@@ -46,11 +46,12 @@
   ],
   "targets": [
     {
-      "id": "Microsoft.VisualStudio.Services"
+      "id": "Microsoft.TeamFoundation.Server",
+      "version": "[16.0]"
     }
   ],
   "demands": [ 
-    "api-version/3.0"
+    "api-version/4.0"
   ],
   "icons": {
     "default": "icon-nexus-logo.png"
