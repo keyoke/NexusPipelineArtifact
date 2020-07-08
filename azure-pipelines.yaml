@@ -26,7 +26,7 @@ stages:
         - script: npm install
           displayName: 'Install Dependencies'
         - script: |
-          npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
+            npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
           displayName: 'Build & Package Server'
         - script: |
             npm run package:ServiceVSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
