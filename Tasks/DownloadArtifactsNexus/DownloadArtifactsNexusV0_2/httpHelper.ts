@@ -6,8 +6,8 @@ import https = require('https');
 import { IhttpHelper } from './IhttpHelper';
 
 export class httpHelper implements IhttpHelper {
-    public async execute_http(searchUri : URL) : Promise<void>;
-    public async execute_http(searchUri : URL, username? : string, password? : string) : Promise<void>
+    public async execute_http(searchUri : URL) : Promise<string>;
+    public async execute_http(searchUri : URL, username? : string, password? : string) : Promise<string>
     {
         tl.debug(`execute_http.`);
 
@@ -35,11 +35,11 @@ export class httpHelper implements IhttpHelper {
         options.port = searchUri.port || options.defaultPort;
     
         // execute the http request
-        await this.execute_request(http, options);
+        return await this.execute_request(http, options);
     }
 
-    public async execute_https(searchUri : URL, acceptUntrustedCerts : boolean)  : Promise<void>;
-    public async execute_https(searchUri : URL, acceptUntrustedCerts : boolean, username? : string, password? : string)  : Promise<void>
+    public async execute_https(searchUri : URL, acceptUntrustedCerts : boolean)  : Promise<string>;
+    public async execute_https(searchUri : URL, acceptUntrustedCerts : boolean, username? : string, password? : string)  : Promise<string>
     {
         tl.debug(`execute_https.`);
 
@@ -68,10 +68,10 @@ export class httpHelper implements IhttpHelper {
         options.port = searchUri.port || options.defaultPort;
 
         // execute the https request
-        await this.execute_request(https, options);
+        return await this.execute_request(https, options);
     }
 
-    private async execute_request(client : any, options :  http.RequestOptions | https.RequestOptions)  : Promise<void>
+    private async execute_request(client : any, options :  http.RequestOptions | https.RequestOptions)  : Promise<string>
     {
         tl.debug(`HTTP Request Options: ${JSON.stringify(options)}.`);  
 
@@ -89,7 +89,7 @@ export class httpHelper implements IhttpHelper {
                     options.path = downloadUri.pathname;
                     options.port = downloadUri.port || options.defaultPort;
 
-                    console.log(`Download asset using '${downloadUri}'.`);
+                    console.log(`Download file using '${downloadUri}'.`);
                     let filename : string = path.basename(downloadUri.pathname);
                     console.log(`Download filename '${filename}'`);
 
@@ -105,10 +105,10 @@ export class httpHelper implements IhttpHelper {
                                 file.write(chunk);
                             }).on('end', function(){
                                 file.end();
+                                console.log(`##vso[task.setvariable variable=MAVEN_REPOSITORY_ASSET_FILENAME;isSecret=false;isOutput=true;]${filename}`)
+                                console.log(`Successfully downloaded asset '${filename}' using '${downloadUri}'.`);
+                                resolve();
                             });
-                            console.log(`##vso[task.setvariable variable=MAVEN_REPOSITORY_ASSET_FILENAME;isSecret=false;isOutput=true;]${filename}`)
-                            console.log(`Successfully downloaded asset '${filename}' using '${downloadUri}'.`);
-                            resolve();
                         } else
                         {
                             console.log(`Asset download was not successful!`);
@@ -116,6 +116,14 @@ export class httpHelper implements IhttpHelper {
                         }
                     });
                     inner_req.end();
+                }else if(res.statusCode == 200) 
+                {
+                    tl.debug(`Http Get request was successful!`);
+                    // get response body
+                    const body = [];
+                    res.on('data', (chunk) => body.push(chunk));
+                    // we are done, resolve promise with those joined chunks
+                    res.on('end', () => resolve(body.join('')));
                 }else
                 {
                     tl.debug(`Asset search was not successful!`);
