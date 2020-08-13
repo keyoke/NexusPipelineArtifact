@@ -16,7 +16,7 @@ export class httpHelper implements IhttpHelper {
             path: `${searchUri.pathname}?${searchUri.searchParams}`,
             method: 'GET',
             headers: {
-                'Accept': 'application/xml'
+                'Accept': 'application/json'
             }   
         };
 
@@ -49,7 +49,7 @@ export class httpHelper implements IhttpHelper {
             method: 'GET',
             rejectUnauthorized: !acceptUntrustedCerts, // By default ensure we validate SSL certificates
             headers: {
-                'Accept': 'application/xml'
+                'Accept': 'application/json'
             }   
         };
 
@@ -80,10 +80,10 @@ export class httpHelper implements IhttpHelper {
                 tl.debug(`HTTP Response Status Code: ${res.statusCode}.`);
                 tl.debug(`HTTP Response Status Message: ${res.statusMessage}.`);
                 tl.debug(`HTTP Response Headers: ${JSON.stringify(res.headers)}.`);
-
-                if (res.statusCode == 301 || res.statusCode == 307) {
+    
+                if (res.statusCode == 302) {
                     const downloadUri : URL = new URL(res.headers.location);
-
+    
                     // Set correct options for the new request to download our file
                     options.host = downloadUri.hostname;
                     options.path = downloadUri.pathname;
@@ -92,12 +92,12 @@ export class httpHelper implements IhttpHelper {
                     console.log(`Download file using '${downloadUri}'.`);
                     let filename : string = path.basename(downloadUri.pathname);
                     console.log(`Download filename '${filename}'`);
-
+    
                     let inner_req : http.ClientRequest = client.request(options, function(inner_res : http.IncomingMessage) { 
                         tl.debug(`HTTP Response Status Code: ${inner_res.statusCode}.`);
                         tl.debug(`HTTP Response Status Message: ${inner_res.statusMessage}.`);
                         tl.debug(`HTTP Response Headers: ${JSON.stringify(inner_res.headers)}.`);
-
+    
                         if(inner_res.statusCode == 200)
                         {
                             const file : fs.WriteStream = fs.createWriteStream(filename);
@@ -128,7 +128,9 @@ export class httpHelper implements IhttpHelper {
                 {
                     tl.debug(`Asset search was not successful!`);
                     let message : string = `Asset search was not successful!`;
-                    if (res.statusCode == 401) {
+                    if (res.statusCode == 400) {
+                        message = `Search returned multiple assets, please refine search criteria to find a single asset!`;
+                    } else if (res.statusCode == 401) {
                         message = `Invalid Nexus Repo Manager credentials!`;
                     }  else if (res.statusCode == 404) {
                         message = `Asset does not exist for search, or invalid Nexus Repo Manager Url!`;
