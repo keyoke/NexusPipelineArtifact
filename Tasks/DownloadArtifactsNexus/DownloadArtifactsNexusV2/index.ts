@@ -44,7 +44,7 @@ async function run() {
         const group: string | undefined = tl.getInput("group", true);
         const artifact: string | undefined = tl.getInput("artifact", true);
         const baseVersion: string | undefined = tl.getInput("version", true);
-        const packaging: string | undefined = tl.getInput("packaging", false);
+        const packaging: string | undefined = tl.getInput("packaging", true);
         const classifier: string | undefined = tl.getInput("classifier", false);
         const extension: string | undefined = tl.getInput("extension", false);
         const downloadPath: string | undefined = tl.getInput("downloadPath", false);
@@ -86,15 +86,7 @@ async function run() {
         }
 
         tl.debug(`HostUri set to '${hostUri}'`);        
-
-        if(packaging)
-        {
-            console.log(`Using Packaging ${packaging}.`);
-        }
-        else
-        {       
-            console.log('Packaging has not been supplied.');            
-        }
+        console.log(`Using Packaging ${packaging}.`);
 
         if(extension)
         {
@@ -123,6 +115,17 @@ async function run() {
         else
         {
             await nexus.downloadAsset(hostUri.href, auth, acceptUntrustedCerts, repository, group, artifact, baseVersion, extension, classifier, packaging);
+        }
+
+        //console.log(`##vso[task.setvariable variable=MAVEN_REPOSITORY_ASSET_FILENAME;isSecret=false;isOutput=true;]${filename}`)
+        let MAVEN_REPOSITORY_ASSET_FILENAMES : string = tl.getVariable("MAVEN_REPOSITORY_ASSET_FILENAMES");
+        if(MAVEN_REPOSITORY_ASSET_FILENAMES)
+        {
+            let MAVEN_REPOSITORY_ASSET_FILENAME : string[] = MAVEN_REPOSITORY_ASSET_FILENAMES.split(",").filter(file => file.includes(`.${packaging}`))
+            if(MAVEN_REPOSITORY_ASSET_FILENAME.length == 1)
+            {
+                tl.setVariable("MAVEN_REPOSITORY_ASSET_FILENAME", MAVEN_REPOSITORY_ASSET_FILENAME[0], false);
+            }
         }
     }
     catch (err) {

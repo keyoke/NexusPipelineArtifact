@@ -17,7 +17,7 @@
     "version": {
         "Major": 3,
         "Minor": 0,
-        "Patch": 53
+        "Patch": 58
     },
     "minimumAgentVersion": "2.144.0",
     "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v3",
@@ -153,7 +153,11 @@
     ],
     "OutputVariables": [{
       "name" : "MAVEN_REPOSITORY_ASSET_FILENAME",
-      "description" : "Filename of the Asset which was downloaded from your Maven Repository."
+      "description" : "The primary file name of the asset which was downloaded from your Maven Repository based on the packaging."
+    },
+    {
+      "name" : "MAVEN_REPOSITORY_ASSET_FILENAMES",
+      "description" : "The comma seperated list of all the file names for the assets which were downloaded from your Maven Repository."
     }],
     "dataSourceBindings": [
       {

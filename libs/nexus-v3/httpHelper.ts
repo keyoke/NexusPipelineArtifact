@@ -105,7 +105,21 @@ export class httpHelper implements IhttpHelper {
                                 file.write(chunk);
                             }).on('end', function(){
                                 file.end();
-                                console.log(`##vso[task.setvariable variable=MAVEN_REPOSITORY_ASSET_FILENAME;isSecret=false;isOutput=true;]${filename}`)
+
+                                // Maintain a list of files that have been downloaded and set a pipeline variable containing the list
+                                let MAVEN_REPOSITORY_ASSET_FILENAMES : string = tl.getVariable("MAVEN_REPOSITORY_ASSET_FILENAMES");
+                                if(MAVEN_REPOSITORY_ASSET_FILENAMES)
+                                {
+                                    if(!MAVEN_REPOSITORY_ASSET_FILENAMES.includes(filename))
+                                    {
+                                        tl.setVariable("MAVEN_REPOSITORY_ASSET_FILENAMES", `${MAVEN_REPOSITORY_ASSET_FILENAMES},${filename}`, false);
+                                    }
+                                }
+                                else
+                                {
+                                    tl.setVariable("MAVEN_REPOSITORY_ASSET_FILENAMES", filename, false);
+                                }
+
                                 console.log(`Successfully downloaded asset '${filename}' using '${downloadUri}'.`);
                                 resolve();
                             });

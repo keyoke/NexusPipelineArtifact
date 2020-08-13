@@ -83,7 +83,7 @@ export class nexus {
         for(var extension in extensions){      
             await this.downloadAsset(nexusUrl, auth, acceptUntrustedCerts, repository, group, artifact, baseVersion, extensions[extension], classifier);
         }
-    
+            
         console.log(`Completed search for asset using '${hostUri}'.`);
     }
     

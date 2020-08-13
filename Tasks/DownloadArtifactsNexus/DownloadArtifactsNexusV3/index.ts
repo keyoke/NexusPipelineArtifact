@@ -124,6 +124,17 @@ async function run() {
             await nexus.downloadAsset(hostUri.href, auth, acceptUntrustedCerts, repository, group, artifact, baseVersion, extension, packaging, classifier);
         // }
 
+        //console.log(`##vso[task.setvariable variable=MAVEN_REPOSITORY_ASSET_FILENAME;isSecret=false;isOutput=true;]${filename}`)
+        let MAVEN_REPOSITORY_ASSET_FILENAMES : string = tl.getVariable("MAVEN_REPOSITORY_ASSET_FILENAMES");
+        if(MAVEN_REPOSITORY_ASSET_FILENAMES)
+        {
+            let MAVEN_REPOSITORY_ASSET_FILENAME : string[] = MAVEN_REPOSITORY_ASSET_FILENAMES.split(",").filter(file => file.includes(`.${packaging}`))
+            if(MAVEN_REPOSITORY_ASSET_FILENAME.length == 1)
+            {
+                tl.setVariable("MAVEN_REPOSITORY_ASSET_FILENAME", MAVEN_REPOSITORY_ASSET_FILENAME[0], false);
+            }
+        }
+
     }
     catch (err) {
         tl.setResult(tl.TaskResult.Failed, err.message);
