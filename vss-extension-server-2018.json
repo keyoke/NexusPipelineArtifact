@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "nexus-custom-release-artifact-server-2018-extension",
   "publisher": "soft-cor",
-  "version": "1.0.116",
+  "version": "1.0.122",
   "name": "Sonatype Nexus Repository Release Artifact",
   "description": "Add support for Sonatype Nexus Repository as an artifact for Release Pipelines",
   "public": true,
