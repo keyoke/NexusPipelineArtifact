@@ -31,6 +31,10 @@ stages:
             npm run build
           displayName: 'Build Nexus-v2 Lib'
           workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v2
+        - script: |            
+            npm link nexus-v2
+          displayName: 'Link Nexus-v2 Lib'
+          workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v2
         - script: |
             npm install
           displayName: 'Install Dependencies Nexus-v3 Lib'
@@ -38,6 +42,10 @@ stages:
         - script: |
             npm run build
           displayName: 'Build Nexus-v3 Lib'
+          workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v3
+        - script: |            
+            npm link nexus-v3
+          displayName: 'Link Nexus-v3 Lib'
           workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v3
         - script: npm install
           displayName: 'Install Dependencies'
