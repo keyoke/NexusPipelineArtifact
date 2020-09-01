@@ -108,14 +108,14 @@ async function run() {
 
         // Do we have packaging and extension? if not lets download all files.
         // https://help.sonatype.com/repomanager3/repository-manager-concepts/components%2C-repositories%2C-and-repository-formats
-        if(!extension)
-        {                     
-            await nexus.downloadAssets(hostUri.href,  auth, acceptUntrustedCerts, repository, group, artifact, baseVersion, packaging, classifier);
-        }
-        else
-        {
+        // if(!extension)
+        // {                     
+        //     await nexus.downloadAssets(hostUri.href,  auth, acceptUntrustedCerts, repository, group, artifact, baseVersion, packaging, classifier);
+        // }
+        // else
+        // {
             await nexus.downloadAsset(hostUri.href, auth, acceptUntrustedCerts, repository, group, artifact, baseVersion, extension, packaging, classifier);
-        }
+        // }
 
         //console.log(`##vso[task.setvariable variable=MAVEN_REPOSITORY_ASSET_FILENAME;isSecret=false;isOutput=true;]${filename}`)
         let MAVEN_REPOSITORY_ASSET_FILENAMES : string = tl.getVariable("MAVEN_REPOSITORY_ASSET_FILENAMES");
