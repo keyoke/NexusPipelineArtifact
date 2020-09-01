@@ -23,8 +23,8 @@ stages:
           displayName: 'Install Node.js'
         - script: npm install -g tfx-cli
           displayName: 'Install Node CLI for Azure DevOps'
-        - script: npm install --only=dev
-          displayName: 'Install devDependencies'
+        - script: npm install
+          displayName: 'Install Dependencies'
           workingDirectory: $(Build.SourcesDirectory)
         - script: |
             npm install
@@ -38,8 +38,8 @@ stages:
             npm link
           displayName: 'Build Nexus-v3 Lib'
           workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v3
-        - script: npm install --only=prod
-          displayName: 'Install prodDependencies'
+        - script: npm install
+          displayName: 'Install Dependencies'
           workingDirectory: $(Build.SourcesDirectory)
         - script: |
             npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}            
