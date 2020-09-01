@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "postinstall": "cd ./libs/nexus-v2 && npm link && cd ../nexus-v3 && npm link && cd ../../Tasks/DownloadArtifactsNexus && cd ./DownloadArtifactsNexusV2 && npm install && nlc nexus-v2 && cd ../DownloadArtifactsNexusV3 && npm install && nlc nexus-v3 && cd ../DownloadArtifactsNexusV0_2 && npm install && nlc nexus-v2 && cd ../DownloadArtifactsNexusV0_3 && npm install && nlc nexus-v3",
+    "postinstall": "cd ./Tasks/DownloadArtifactsNexus && cd ./DownloadArtifactsNexusV2 && npm install && nlc nexus-v2 && cd ../DownloadArtifactsNexusV3 && npm install && nlc nexus-v3 && cd ../DownloadArtifactsNexusV0_2 && npm install && nlc nexus-v2 && cd ../DownloadArtifactsNexusV0_3 && npm install && nlc nexus-v3",
     "build": "tsc",
     "package:DownloadArtifactsNexusV0_2": "(for %f in (task.json,package.json,icon.png) do xcopy /y /i .\\Tasks\\DownloadArtifactsNexus\\DownloadArtifactsNexusV0_2\\%f .\\dist\\Tasks\\DownloadArtifactsNexus\\DownloadArtifactsNexusV0_2\\) && cd ./dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV0_2 && npm install --only=production && nlc nexus-v2",
     "package:DownloadArtifactsNexusV0_3": "(for %f in (task.json,package.json,icon.png) do xcopy /y /i .\\Tasks\\DownloadArtifactsNexus\\DownloadArtifactsNexusV0_3\\%f .\\dist\\Tasks\\DownloadArtifactsNexus\\DownloadArtifactsNexusV0_3\\) && cd ./dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV0_3 && npm install --only=production && nlc nexus-v3",
@@ -11,6 +11,7 @@
     "package": "npm run package:Server2018VSIX && npm run package:ServiceVSIX"
   },
   "devDependencies": {
-    "npm-link-better": "^0.4.3"
+    "npm-link-better": "^0.4.3",
+    "tfx-cli": "^0.8.2"
   }
 }
