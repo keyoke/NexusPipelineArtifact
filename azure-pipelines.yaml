@@ -23,19 +23,14 @@ stages:
           displayName: 'Install Node.js'
         - script: npm install -g tfx-cli
           displayName: 'Install Node CLI for Azure DevOps'
-        - script: npm install
-          displayName: 'Install Dependencies'
-          workingDirectory: $(Build.SourcesDirectory)
         - script: |
             npm install
             npm run build
-            npm link
           displayName: 'Build Nexus-v2 Lib'
           workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v2
         - script: |
             npm install
             npm run build
-            npm link
           displayName: 'Build Nexus-v3 Lib'
           workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v3
         - script: npm install
