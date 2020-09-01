@@ -25,44 +25,44 @@ stages:
           displayName: 'Install Node CLI for Azure DevOps'
         - script: npm install --only=dev
           displayName: 'Install devDependencies'
-          workingDirectory: $(Pipeline.Workspace)
+          workingDirectory: $(Build.SourcesDirectory)
         - script: |
             npm install
             npm run build
             npm link
           displayName: 'Build Nexus-v2 Lib'
-          workingDirectory: $(Pipeline.Workspace)\libs\nexus-v2
+          workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v2
         - script: |
             npm install
             npm run build
             npm link
           displayName: 'Build Nexus-v3 Lib'
-          workingDirectory: $(Pipeline.Workspace)\libs\nexus-v3
+          workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v3
         - script: npm install --only=prod
           displayName: 'Install prodDependencies'
-          workingDirectory: $(Pipeline.Workspace)
+          workingDirectory: $(Build.SourcesDirectory)
         - script: |
             npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}            
           displayName: 'Build & Package Server'
-          workingDirectory: $(Pipeline.Workspace)
+          workingDirectory: $(Build.SourcesDirectory)
         - script: |
             npm run package:ServiceVSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
           displayName: 'Build & Package Service'
-          workingDirectory: $(Pipeline.Workspace)
+          workingDirectory: $(Build.SourcesDirectory)
         - task: PowerShell@2
           displayName: 'Tag Git Commit'
           inputs:
             targetType: 'inline'
             script: |
               git tag "v$(MajorVersion).$(MinorVersion).$(PatchVersion)"
-            workingDirectory: $(Pipeline.Workspace)
+            workingDirectory: $(Build.SourcesDirectory)
         - task: PowerShell@2
           displayName: 'Push Git Tags'
           inputs:
             targetType: 'inline'
             script: |
               git push --tags
-            workingDirectory: $(Pipeline.Workspace)
+            workingDirectory: $(Build.SourcesDirectory)
         - task: GitHubRelease@1
           displayName: 'Publish Extension as Release'
           inputs:
