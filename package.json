@@ -11,6 +11,7 @@
     "package": "npm run package:Server2018VSIX && npm run package:ServiceVSIX"
   },
   "devDependencies": {
-    "npm-link-better": "^0.4.3"
+    "npm-link-better": "^0.4.3",
+    "tfx-cli": "^0.8.2"
   }
 }
