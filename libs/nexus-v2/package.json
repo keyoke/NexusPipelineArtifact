@@ -1,15 +1,13 @@
 {
-  "name": "download-artifacts-nexus-v3",
-  "version": "3.0.0",
+  "name": "nexus-v2",
+  "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/nexus.js",
   "author": "Gareth Emslie",
   "license": "MIT",
   "dependencies": {
     "azure-pipelines-task-lib": "^2.9.3",
-    "fs": "0.0.1-security",
     "path": "^0.12.7",
-    "shelljs": "^0.8.3",
     "xml2js": "^0.4.23",
     "xml2js-xpath": "^0.11.0"
   },
@@ -19,5 +17,8 @@
     "tslint": "^6.1.0",
     "typescript": "^3.8.3",
     "typescript-tslint-plugin": "^0.5.5"
+  },
+  "scripts": {
+    "build": "tsc"
   }
 }

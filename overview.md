@@ -33,7 +33,8 @@ The tasks proviuded by this extension make use of output variables to provide th
 
 The following output variables are set:
 
-* MAVEN_REPOSITORY_ASSET_FILENAME - The final file name of the Asset which was downloaded from your Maven Repository.
+* MAVEN_REPOSITORY_ASSET_FILENAME - The primary file name of the asset which was downloaded from your Maven Repository based on the packaging.
+* MAVEN_REPOSITORY_ASSET_FILENAMES - The comma seperated list of all the file names for the assets which were downloaded from your Maven Repository.
 
 
 

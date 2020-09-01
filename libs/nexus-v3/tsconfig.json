@@ -6,6 +6,7 @@
     "rootDir": ".",
     "sourceMap": true,
     "strict": false,
+    "declaration": false,
     "plugins": [
       {
         "name": "typescript-tslint-plugin"
@@ -13,7 +14,7 @@
     ]
   },
   "include": [
-     "./Tasks/**/*"
+     "**/*"
     ],
   "exclude": [
       "node_modules"

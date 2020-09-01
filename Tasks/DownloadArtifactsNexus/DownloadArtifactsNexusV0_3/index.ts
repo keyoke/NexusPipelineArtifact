@@ -2,9 +2,8 @@ import tl = require('azure-pipelines-task-lib/task');
 import shell = require("shelljs");
 import path = require("path");
 import fs = require('fs');
-import { IhttpHelper } from './IhttpHelper';
-import { httpHelper } from './httpHelper';
-const nexus : IhttpHelper = new httpHelper();
+import n = require('nexus-v3');
+const nexus = new n.nexus();
 
 async function run() {
     console.log(`Downloading artifact.`);
@@ -93,70 +92,47 @@ async function run() {
         }
 
         tl.debug(`HostUri set to '${hostUri}'`);
-        // https://help.sonatype.com/repomanager3/rest-and-integration-api/search-api
-        // Build the final search uri
-        let requestPath : string = `/service/rest/v1/search/assets/download`;
 
-        // Handle root path
-        if(hostUri.pathname !== "/")
+        console.log(`Using Packaging ${packaging}.`);
+
+        if(extension)
         {
-            requestPath = path.join(hostUri.pathname, requestPath);
+            console.log(`Using extension ${extension}.`);
         }
-        hostUri.pathname = requestPath;
+        else
+        {                  
+            console.log('Extension has not been supplied.');             
+        }
 
-        // Query Parameters
-        
-        // *** ONLY Works in Nexus 3.16+ *** 
-        // https://help.sonatype.com/repomanager3/rest-and-integration-api/search-api#SearchAPI-DownloadingtheLatestVersionofanAsset
-        // We could use /service/rest/v1/status and look at the response header "server: Nexus/3.21.1-01 (OSS)"
-        // hostUri.searchParams.append("sort", "version");
-        // *** ONLY Works in Nexus 3.16+ *** 
-
-        hostUri.searchParams.append("repository", repository);
-        hostUri.searchParams.append("maven.groupId", group);
-        hostUri.searchParams.append("maven.artifactId", artifact);
-        hostUri.searchParams.append("maven.baseVersion", baseVersion);
-        hostUri.searchParams.append("maven.extension", extension);
-        hostUri.searchParams.append("maven.classifier", "");
-
-        // Do we have a classifier
-        if (classifier) {
+        if (classifier)             
+        {
             console.log(`Using classifier ${classifier}.`);
-            hostUri.searchParams.set("maven.classifier",classifier);
         }
         else
         {
             console.log('Classifier has not been supplied.');
         }
+        
+        // Do we have packaging and extension? if not lets download all files.
+        // https://help.sonatype.com/repomanager3/repository-manager-concepts/components%2C-repositories%2C-and-repository-formats
+        // if(!extension)
+        // {                     
+        //     await nexus.downloadAssets(hostUri.href,  auth, acceptUntrustedCerts, repository, group, artifact, baseVersion, packaging, classifier);
+       //  }
+        // else
+        // {
+            await nexus.downloadAsset(hostUri.href, auth, acceptUntrustedCerts, repository, group, artifact, baseVersion, extension, packaging, classifier);
+        // }
 
-        console.log(`Search for asset using '${hostUri}'.`);
-        try {
-            // need to refactor this logic to reduce duplication of code
-            if (hostUri.protocol === "https:") {
-                if(auth.scheme === "UsernamePassword")
-                {
-                    await nexus.execute_https(hostUri, acceptUntrustedCerts, auth.parameters["username"], auth.parameters["password"]);
-                }
-                else
-                {
-                    await nexus.execute_https(hostUri, acceptUntrustedCerts);
-                }
-            }
-            else
+        //console.log(`##vso[task.setvariable variable=MAVEN_REPOSITORY_ASSET_FILENAME;isSecret=false;isOutput=true;]${filename}`)
+        let MAVEN_REPOSITORY_ASSET_FILENAMES : string = tl.getVariable("MAVEN_REPOSITORY_ASSET_FILENAMES");
+        if(MAVEN_REPOSITORY_ASSET_FILENAMES)
+        {
+            let MAVEN_REPOSITORY_ASSET_FILENAME : string[] = MAVEN_REPOSITORY_ASSET_FILENAMES.split(",").filter(file => file.includes(`.${packaging}`))
+            if(MAVEN_REPOSITORY_ASSET_FILENAME.length == 1)
             {
-                if(auth.scheme === "UsernamePassword")
-                {
-                    await nexus.execute_http(hostUri, auth.parameters["username"], auth.parameters["password"]);
-                }
-                else
-                {
-                    await nexus.execute_http(hostUri);
-                }
+                tl.setVariable("MAVEN_REPOSITORY_ASSET_FILENAME", MAVEN_REPOSITORY_ASSET_FILENAME[0], false);
             }
-            console.log(`Completed search for asset using '${hostUri}'.`);
-        } catch (inner_err) {
-            console.log(`Could not complete search for asset using '${hostUri}'.`);
-            throw inner_err;
         }
 
     }
