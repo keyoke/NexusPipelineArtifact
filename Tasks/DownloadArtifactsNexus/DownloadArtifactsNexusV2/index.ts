@@ -43,7 +43,7 @@ async function run() {
         const repository: string | undefined = tl.getInput("repository", true);
         const group: string | undefined = tl.getInput("group", true);
         const artifact: string | undefined = tl.getInput("artifact", true);
-        const baseVersion: string | undefined = tl.getInput("version", true);
+        const baseVersion: string | undefined = tl.getInput("baseVersion", true);
         const packaging: string | undefined = tl.getInput("packaging", true);
         const classifier: string | undefined = tl.getInput("classifier", false);
         const extension: string | undefined = tl.getInput("extension", false);
