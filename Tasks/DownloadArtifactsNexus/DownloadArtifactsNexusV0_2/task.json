@@ -17,7 +17,7 @@
     "version": {
         "Major": 2,
         "Minor": 0,
-        "Patch": 60
+        "Patch": 61
     },
     "minimumAgentVersion": "2.144.0",
     "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v2",
@@ -82,13 +82,13 @@
               "BaseVersion"
             ],
             "type": "pickList",
-            "label": "Base Version",
+            "label": "Version",
             "defaultValue": "",
             "required": true,
             "properties": {
               "EditableOptions": "True"
             },
-            "helpMarkDown": "The base version of the component/asset."
+            "helpMarkDown": "The version of the component/asset."
           },
           {
             "name": "packaging",
