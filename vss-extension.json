@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "nexus-custom-release-artifact-extension",
   "publisher": "soft-cor",
-  "version": "1.0.134",
+  "version": "1.0.136",
   "name": "Sonatype Nexus Repository Release Artifact",
   "description": "Add support for Sonatype Nexus Repository as an artifact for Release Pipelines",
   "public": true,
@@ -451,7 +451,7 @@
               "target": "latestversion",
               "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}&a={{{artifact}}}",
               "resultSelector":"jsonpath:$.data[0]",
-              "resultTemplate": "{ Value : \"{{#notEquals latestRelease null}}{{{latestRelease}}}{{else}}{{{latestSnapshot}}}{{/notEquals}}\", DisplayValue : \"{{#notEquals latestRelease null}}{{{latestRelease}}}{{else}}{{{latestSnapshot}}}{{/notEquals}}\" }"
+              "resultTemplate": "{{#if latestRelease}}{ Value : \"{{{latestRelease}}}\", DisplayValue : \"{{{latestRelease}}}\" }{{else}}{ Value : \"{{{latestSnapshot}}}\", DisplayValue : \"{{{latestSnapshot}}}\" }{{/if}}"
             }
           ],
           "ArtifactTriggerConfiguration" : {
