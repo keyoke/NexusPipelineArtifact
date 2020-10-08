@@ -82,13 +82,13 @@
               "BaseVersion"
             ],
             "type": "pickList",
-            "label": "Base Version",
+            "label": "Version",
             "defaultValue": "",
             "required": true,
             "properties": {
               "EditableOptions": "True"
             },
-            "helpMarkDown": "The base version of the component/asset."
+            "helpMarkDown": "The version of the component/asset."
           },
           {
             "name": "packaging",
