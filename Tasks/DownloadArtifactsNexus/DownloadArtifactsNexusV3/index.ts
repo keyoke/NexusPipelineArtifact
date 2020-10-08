@@ -43,7 +43,7 @@ async function run() {
         const repository: string | undefined = tl.getInput("repository", true);
         const group: string | undefined = tl.getInput("group", true);
         const artifact: string | undefined = tl.getInput("artifact", true);
-        const baseVersion: string | undefined = tl.getInput("baseVersion", true);
+        const version: string | undefined = tl.getInput("baseVersion", true);
         const packaging: string | undefined = tl.getInput("packaging", true);
         const classifier: string | undefined = tl.getInput("classifier", false);
         let extension: string | undefined = tl.getInput("extension", false);
@@ -121,7 +121,7 @@ async function run() {
        //  }
         // else
         // {
-            await nexus.downloadAsset(hostUri.href, auth, acceptUntrustedCerts, repository, group, artifact, baseVersion, extension, packaging, classifier);
+            await nexus.downloadAsset(hostUri.href, auth, acceptUntrustedCerts, repository, group, artifact, version, extension, packaging, classifier);
         // }
 
         //console.log(`##vso[task.setvariable variable=MAVEN_REPOSITORY_ASSET_FILENAME;isSecret=false;isOutput=true;]${filename}`)
