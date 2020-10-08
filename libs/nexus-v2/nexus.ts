@@ -9,7 +9,7 @@ const helper : IhttpHelper = new httpHelper();
 
 export class nexus {
         
-    public async downloadAsset(nexusUrl: string, auth: tl.EndpointAuthorization, acceptUntrustedCerts: boolean, repository : string, group : string, artifact : string, baseVersion : string, extension : string, packaging : string, classifier? : string) : Promise<void> {
+    public async downloadAsset(nexusUrl: string, auth: tl.EndpointAuthorization, acceptUntrustedCerts: boolean, repository : string, group : string, artifact : string, version : string, extension : string, packaging : string, classifier? : string) : Promise<void> {
         // Build the final download uri
         // https://support.sonatype.com/hc/en-us/articles/213465488
         // https://repository.sonatype.org/nexus-restlet1x-plugin/default/docs/path__artifact_maven_redirect.html
@@ -27,7 +27,7 @@ export class nexus {
         hostUri.searchParams.append("r", repository);
         hostUri.searchParams.append("g", group);
         hostUri.searchParams.append("a", artifact);
-        hostUri.searchParams.append("v", baseVersion);
+        hostUri.searchParams.append("v", version);
         hostUri.searchParams.append("p", packaging);
     
         // Do we have a extension
@@ -46,7 +46,7 @@ export class nexus {
         console.log(`Completed download asset using '${hostUri}'.`);
     }
         
-    public async downloadAssets(nexusUrl: string, auth: tl.EndpointAuthorization, acceptUntrustedCerts: boolean, repository : string, group : string, artifact : string, baseVersion : string, packaging : string, classifier? : string) : Promise<void> {
+    public async downloadAssets(nexusUrl: string, auth: tl.EndpointAuthorization, acceptUntrustedCerts: boolean, repository : string, group : string, artifact : string, version : string, packaging : string, classifier? : string) : Promise<void> {
         // Build the final search uri
         // https://repository.sonatype.org/nexus-indexer-lucene-plugin/default/docs/path__lucene_search.html
         // https://nexusrepov2vm1.azure-zone.net:8443/nexus/service/local/lucene/search?repositoryId=releases&g=org.apache.maven&a=maven-artifact&v=3.6.3
@@ -65,7 +65,7 @@ export class nexus {
         hostUri.searchParams.append("repositoryId", repository);
         hostUri.searchParams.append("g", group);
         hostUri.searchParams.append("a", artifact);
-        hostUri.searchParams.append("v", baseVersion);    
+        hostUri.searchParams.append("v", version);    
         hostUri.searchParams.append("p", packaging);
         
         // Do we have a classifier
@@ -81,7 +81,7 @@ export class nexus {
     
         // Download each asset    
         for(var extension in extensions){      
-            await this.downloadAsset(nexusUrl, auth, acceptUntrustedCerts, repository, group, artifact, baseVersion, extensions[extension], packaging, classifier);
+            await this.downloadAsset(nexusUrl, auth, acceptUntrustedCerts, repository, group, artifact, version, extensions[extension], packaging, classifier);
         }
             
         console.log(`Completed search for asset using '${hostUri}'.`);

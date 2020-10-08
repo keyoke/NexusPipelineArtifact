@@ -9,7 +9,7 @@ const helper : IhttpHelper = new httpHelper();
 
 export class nexus {
         
-    public async downloadAsset(nexusUrl: string, auth: tl.EndpointAuthorization, acceptUntrustedCerts: boolean, repository : string, group : string, artifact : string, baseVersion : string, extension : string, packaging : string, classifier? : string) : Promise<void> {
+    public async downloadAsset(nexusUrl: string, auth: tl.EndpointAuthorization, acceptUntrustedCerts: boolean, repository : string, group : string, artifact : string, version : string, extension : string, packaging : string, classifier? : string) : Promise<void> {
         // Build the final download uri
         let hostUri = new URL(nexusUrl);
         // https://help.sonatype.com/repomanager3/rest-and-integration-api/search-api
@@ -33,15 +33,16 @@ export class nexus {
 
         hostUri.searchParams.append("repository", repository);
         hostUri.searchParams.append("maven.groupId", group);
-        hostUri.searchParams.append("maven.artifactId", artifact);
-        hostUri.searchParams.append("maven.baseVersion", baseVersion);
+        hostUri.searchParams.append("maven.artifactId", artifact);        
         hostUri.searchParams.append("maven.extension", extension);
         hostUri.searchParams.append("maven.classifier", "");
-
         // Do we have a classifier
         if (classifier) {        
             hostUri.searchParams.set("maven.classifier",classifier);
         }
+        // switch to the "version" criteria, should work in the case of release and snapshot versions
+        // hostUri.searchParams.append("maven.baseVersion", baseVersion);
+        hostUri.searchParams.append("version", version);
     
         console.log(`Download asset using '${hostUri}'.`);
         // Execute the request
