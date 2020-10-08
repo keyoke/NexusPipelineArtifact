@@ -447,7 +447,7 @@
               "target": "latestversion",
               "endpointUrl":"{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}&a={{{artifact}}}",
               "resultSelector":"jsonpath:$.data[0]",
-              "resultTemplate": "{ Value : \"{{{latestRelease}}}\", DisplayValue : \"{{{latestRelease}}}\" }"
+              "resultTemplate": "{ Value : \"{{#notEquals latestRelease null}}{{{latestRelease}}}{{else}}{{{latestSnapshot}}}{{/notEquals}}\", DisplayValue : \"{{#notEquals latestRelease null}}{{{latestRelease}}}{{else}}{{{latestSnapshot}}}{{/notEquals}}\" }"
             }
           ],
           "ArtifactTriggerConfiguration" : {
