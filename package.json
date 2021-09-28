@@ -8,10 +8,19 @@
     "package:DownloadArtifactsNexusV3": "(for %f in (task.json,package.json,icon.png) do xcopy /y /i .\\Tasks\\DownloadArtifactsNexus\\DownloadArtifactsNexusV3\\%f .\\dist\\Tasks\\DownloadArtifactsNexus\\DownloadArtifactsNexusV3\\) && cd ./dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV3 && npm install --only=production && nlc nexus-v3",
     "package:Server2018VSIX": "npm run build && npm run package:DownloadArtifactsNexusV0_2 && npm run package:DownloadArtifactsNexusV0_3 && tfx extension create --manifests vss-extension-server-2018.json --output-path ./dist/",
     "package:ServiceVSIX": "npm run build && npm run package:DownloadArtifactsNexusV2 && npm run package:DownloadArtifactsNexusV3 && tfx extension create --manifests vss-extension.json --output-path ./dist/",
-    "package": "npm run package:Server2018VSIX && npm run package:ServiceVSIX"
+    "package": "npm run package:Server2018VSIX && npm run package:ServiceVSIX",
+    "linter": "eslint Tasks libs --fix --cache"
   },
   "devDependencies": {
     "npm-link-better": "^0.5.0",
-    "tfx-cli": "^0.8.2"
+    "tfx-cli": "^0.8.2",
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.4.1",
+    "typescript": "^3.8.3"
   }
 }
