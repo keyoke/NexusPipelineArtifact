@@ -9,7 +9,7 @@
     "package:Server2018VSIX": "npm run build && npm run package:DownloadArtifactsNexusV0_2 && npm run package:DownloadArtifactsNexusV0_3 && tfx extension create --manifests vss-extension-server-2018.json --output-path ./dist/",
     "package:ServiceVSIX": "npm run build && npm run package:DownloadArtifactsNexusV2 && npm run package:DownloadArtifactsNexusV3 && tfx extension create --manifests vss-extension.json --output-path ./dist/",
     "package": "npm run package:Server2018VSIX && npm run package:ServiceVSIX",
-    "linter": "eslint .\\Tasks --fix --cache"
+    "linter": "eslint Tasks libs --fix --cache"
   },
   "devDependencies": {
     "npm-link-better": "^0.5.0",
