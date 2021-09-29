@@ -19,32 +19,63 @@ stages:
           clean: true
         - task: NodeTool@0
           inputs:
-            versionSpec: '10.x'
+            versionSpec: '12.x'
           displayName: 'Install Node.js'
         - script: npm install -g tfx-cli
           displayName: 'Install Node CLI for Azure DevOps'
+          enabled: false
+        - script: |
+            npm install
+          displayName: 'Install Dependencies Nexus-v2 Lib'
+          workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v2
+        - script: |            
+            npm run build
+          displayName: 'Build Nexus-v2 Lib'
+          workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v2
+        - script: |            
+            npm link
+          displayName: 'Link Nexus-v2 Lib'
+          workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v2
+        - script: |
+            npm install
+          displayName: 'Install Dependencies Nexus-v3 Lib'
+          workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v3
+        - script: |
+            npm run build
+          displayName: 'Build Nexus-v3 Lib'
+          workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v3
+        - script: |            
+            npm link
+          displayName: 'Link Nexus-v3 Lib'
+          workingDirectory: $(Build.SourcesDirectory)\libs\nexus-v3
         - script: npm install
           displayName: 'Install Dependencies'
+          workingDirectory: $(Build.SourcesDirectory)
         - script: npm run lint
           displayName: 'Run ESLint'
+          workingDirectory: $(Build.SourcesDirectory)
         - script: |
-            npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
+            npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}            
           displayName: 'Build & Package Server'
+          workingDirectory: $(Build.SourcesDirectory)
         - script: |
             npm run package:ServiceVSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
           displayName: 'Build & Package Service'
+          workingDirectory: $(Build.SourcesDirectory)
         - task: PowerShell@2
           displayName: 'Tag Git Commit'
           inputs:
             targetType: 'inline'
             script: |
               git tag "v$(MajorVersion).$(MinorVersion).$(PatchVersion)"
+            workingDirectory: $(Build.SourcesDirectory)
         - task: PowerShell@2
           displayName: 'Push Git Tags'
           inputs:
             targetType: 'inline'
             script: |
               git push --tags
+            workingDirectory: $(Build.SourcesDirectory)
         - task: GitHubRelease@1
           displayName: 'Publish Extension as Release'
           inputs:
@@ -56,5 +87,5 @@ stages:
             tagPattern: 'v$(MajorVersion).$(MinorVersion).$(PatchVersion)'
             assets: '$(System.DefaultWorkingDirectory)\dist\*.vsix'
             changeLogCompareToRelease: 'lastFullRelease'
-            changeLogType: 'commitBased'
+            changeLogType: 'commitBased'            
   
