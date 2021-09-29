@@ -25,6 +25,8 @@ stages:
           displayName: 'Install Node CLI for Azure DevOps'
         - script: npm install
           displayName: 'Install Dependencies'
+        - script: npm run lint
+          displayName: 'Run ESLint'
         - script: |
             npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
           displayName: 'Build & Package Server'
