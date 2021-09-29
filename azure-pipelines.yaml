@@ -51,6 +51,9 @@ stages:
         - script: npm install
           displayName: 'Install Dependencies'
           workingDirectory: $(Build.SourcesDirectory)
+        - script: npm run lint
+          displayName: 'Run ESLint'
+          workingDirectory: $(Build.SourcesDirectory)
         - script: |
             npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}            
           displayName: 'Build & Package Server'
