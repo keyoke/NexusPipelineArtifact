@@ -59,18 +59,14 @@ stages:
           workingDirectory: $(Build.SourcesDirectory)
           condition: eq(variables.isPR, true)
         - script: |
-            npm run package:Server2018VSIX
+            npm run build
           condition: eq(variables.isPR, true)
-          displayName: 'Build Server'
+          displayName: 'Build Server & Service'
         - script: |
             npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}            
           displayName: 'Build & Package Server'
           workingDirectory: $(Build.SourcesDirectory)
           condition: eq(variables.isMain, true)
-        - script: |
-            npm run package:ServiceVSIX
-          condition: eq(variables.isPR, true)
-          displayName: 'Build Service'
         - script: |
             npm run package:ServiceVSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
           displayName: 'Build & Package Service'
