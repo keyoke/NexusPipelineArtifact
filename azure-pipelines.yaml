@@ -1,10 +1,13 @@
 trigger:
 - master
-pr: none
+pr:
+  - master
 variables:
   MajorVersion : 1
   MinorVersion : 0
-  PatchVersion : $[counter(format('nexus-extension-{0}.{1}',variables['MajorVersion'],variables['MinorVersion']), 93)]
+  PatchVersion : $[counter(format('nexus-extension-{0}.{1}.{2}',variables['Build.SourceBranchName'],variables['MajorVersion'],variables['MinorVersion']), 156)]
+  isPR : $[startsWith(variables['Build.SourceBranch'],'refs/pull/')] 
+  isMain : $[startsWith(variables['Build.SourceBranch'],'refs/heads/master')] 
 stages:
   - stage : build_package
     displayName: Build & Package Extension
@@ -54,16 +57,24 @@ stages:
         - script: npm run lint
           displayName: 'Run ESLint'
           workingDirectory: $(Build.SourcesDirectory)
+          condition: eq(variables.isPR, true)
+        - script: |
+            npm run build
+          condition: eq(variables.isPR, true)
+          displayName: 'Build Server & Service'
         - script: |
             npm run package:Server2018VSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}            
           displayName: 'Build & Package Server'
           workingDirectory: $(Build.SourcesDirectory)
+          condition: eq(variables.isMain, true)
         - script: |
             npm run package:ServiceVSIX -- --override {\"version\": \"$(MajorVersion).$(MinorVersion).$(PatchVersion)\"}
           displayName: 'Build & Package Service'
           workingDirectory: $(Build.SourcesDirectory)
+          condition: eq(variables.isMain, true)
         - task: PowerShell@2
           displayName: 'Tag Git Commit'
+          condition: eq(variables.isMain, true)
           inputs:
             targetType: 'inline'
             script: |
@@ -71,6 +82,7 @@ stages:
             workingDirectory: $(Build.SourcesDirectory)
         - task: PowerShell@2
           displayName: 'Push Git Tags'
+          condition: eq(variables.isMain, true)
           inputs:
             targetType: 'inline'
             script: |
@@ -78,6 +90,7 @@ stages:
             workingDirectory: $(Build.SourcesDirectory)
         - task: GitHubRelease@1
           displayName: 'Publish Extension as Release'
+          condition: eq(variables.isMain, true)
           inputs:
             gitHubConnection: 'github.com_keyoke'
             repositoryName: '$(Build.Repository.Name)'
