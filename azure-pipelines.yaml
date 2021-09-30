@@ -1,11 +1,11 @@
 trigger:
 - master
 pr:
-  - main
+  - master
 variables:
   MajorVersion : 1
   MinorVersion : 0
-  PatchVersion : $[counter(format('nexus-extension-{0}.{1}.{2}',variables['Build.SourceBranchName'],variables['MajorVersion'],variables['MinorVersion']), 93)]
+  PatchVersion : $[counter(format('nexus-extension-{0}.{1}.{2}',variables['Build.SourceBranchName'],variables['MajorVersion'],variables['MinorVersion']), 156)]
   isPR : $[startsWith(variables['Build.SourceBranch'],'refs/pull/')] 
   isMain : $[startsWith(variables['Build.SourceBranch'],'refs/heads/main')] 
 stages:
